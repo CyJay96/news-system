@@ -1,0 +1,89 @@
+package ru.clevertec.ecl.newsservice.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.mapper.CommentMapper;
+import ru.clevertec.ecl.newsservice.mapper.NewsMapper;
+import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
+import ru.clevertec.ecl.newsservice.model.dto.response.CommentDtoResponse;
+import ru.clevertec.ecl.newsservice.model.dto.response.NewsDtoResponse;
+import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
+import ru.clevertec.ecl.newsservice.model.entity.Comment;
+import ru.clevertec.ecl.newsservice.model.entity.News;
+import ru.clevertec.ecl.newsservice.repository.CommentRepository;
+import ru.clevertec.ecl.newsservice.repository.NewsRepository;
+import ru.clevertec.ecl.newsservice.service.NewsService;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class NewsServiceImpl implements NewsService {
+
+    private final NewsRepository newsRepository;
+    private final CommentRepository commentRepository;
+    private final NewsMapper newsMapper;
+    private final CommentMapper commentMapper;
+
+    @Override
+    public NewsDtoResponse save(NewsDtoRequest newsDtoRequest) {
+        News savedNews = newsRepository.save(newsMapper.toNews(newsDtoRequest));
+        return newsMapper.toNewsDtoResponse(savedNews);
+    }
+
+    @Override
+    public PageResponse<NewsDtoResponse> findAll(Pageable pageable) {
+        Page<News> newsPage = newsRepository.findAll(pageable);
+
+        List<NewsDtoResponse> newsDtoResponses = newsPage.stream()
+                .map(newsMapper::toNewsDtoResponse)
+                .toList();
+
+        return PageResponse.<NewsDtoResponse>builder()
+                .content(newsDtoResponses)
+                .number(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .numberOfElements(newsDtoResponses.size())
+                .build();
+    }
+
+    @Override
+    public NewsDtoResponse findById(Long id, Pageable pageable) {
+        NewsDtoResponse newsDtoResponse = newsRepository.findById(id)
+                .map(newsMapper::toNewsDtoResponse)
+                .orElseThrow(() -> new EntityNotFoundException(News.class, id));
+
+        Page<Comment> commentPage = commentRepository.findAllByNewsId(id, pageable);
+        List<CommentDtoResponse> commentDtoResponses = commentPage.stream()
+                .map(commentMapper::toCommentDtoResponse)
+                .toList();
+        PageResponse<CommentDtoResponse> comments = PageResponse.<CommentDtoResponse>builder()
+                .content(commentDtoResponses)
+                .number(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .numberOfElements(commentDtoResponses.size())
+                .build();
+
+        newsDtoResponse.setComments(comments);
+        return newsDtoResponse;
+    }
+
+    @Override
+    public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest) {
+        News news = newsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(News.class, id));
+        newsMapper.updateNews(newsDtoRequest, news);
+        return newsMapper.toNewsDtoResponse(newsRepository.save(news));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if (!newsRepository.existsById(id)) {
+            throw new EntityNotFoundException(News.class, id);
+        }
+        newsRepository.deleteById(id);
+    }
+}
