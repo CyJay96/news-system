@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 
 @Value
 @Builder
-public class ApiResponse<T> {
+public class APIResponse<T> {
 
     OffsetDateTime timestamp = OffsetDateTime.now();
 
@@ -21,13 +21,13 @@ public class ApiResponse<T> {
 
     T data;
 
-    public static <T> ResponseEntity<ApiResponse<T>> of(
+    public static <T> ResponseEntity<APIResponse<T>> of(
             final String message,
             final String path,
             final HttpStatus httpStatus,
             final T body
     ) {
-        final ApiResponse<T> apiResponse = ApiResponse.<T>builder()
+        final APIResponse<T> apiResponse = APIResponse.<T>builder()
                 .message(message)
                 .path(path)
                 .status(httpStatus.value())

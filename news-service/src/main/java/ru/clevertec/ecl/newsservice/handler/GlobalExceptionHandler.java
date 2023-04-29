@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
-import ru.clevertec.ecl.newsservice.model.dto.response.ApiResponse;
+import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
 
 import java.util.Optional;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(
+    public ResponseEntity<APIResponse<Void>> handleValidationException(
             MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleEntityNotFoundException(
+    public ResponseEntity<APIResponse<Void>> handleEntityNotFoundException(
             RuntimeException exception,
             HttpServletRequest request
     ) {
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleServerSideErrorException(
+    public ResponseEntity<APIResponse<Void>> handleServerSideErrorException(
             Exception exception,
             HttpServletRequest request
     ) {
@@ -52,12 +52,12 @@ public class GlobalExceptionHandler {
         return generateErrorResponse(exception, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
-    private ResponseEntity<ApiResponse<Void>> generateErrorResponse(
+    private ResponseEntity<APIResponse<Void>> generateErrorResponse(
             Exception exception,
             HttpStatus httpStatus,
             HttpServletRequest request
     ) {
-        final ApiResponse<Void> errorResponse = ApiResponse.<Void>builder()
+        final APIResponse<Void> errorResponse = APIResponse.<Void>builder()
                 .status(httpStatus.value())
                 .message(exception.getMessage())
                 .path(request.getServletPath())
@@ -67,13 +67,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, httpStatus);
     }
 
-    private ResponseEntity<ApiResponse<Void>> generateErrorResponse(
+    private ResponseEntity<APIResponse<Void>> generateErrorResponse(
             Exception exception,
             HttpStatus httpStatus,
             HttpServletRequest request,
             String customMessage
     ) {
-        final ApiResponse<Void> errorResponse = ApiResponse.<Void>builder()
+        final APIResponse<Void> errorResponse = APIResponse.<Void>builder()
                 .status(httpStatus.value())
                 .message(Optional.ofNullable(customMessage).orElse(exception.getMessage()))
                 .path(request.getServletPath())

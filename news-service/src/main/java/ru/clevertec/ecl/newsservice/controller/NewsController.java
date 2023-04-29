@@ -1,5 +1,11 @@
 package ru.clevertec.ecl.newsservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -21,7 +27,7 @@ import ru.clevertec.ecl.newsservice.aop.annotation.Log;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
 import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
-import ru.clevertec.ecl.newsservice.model.dto.response.ApiResponse;
+import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.NewsDtoResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
 import ru.clevertec.ecl.newsservice.service.NewsService;
@@ -40,6 +46,7 @@ import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PA
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = NEWS_API_PATH)
+@Tag(name = "NewsController", description = "News API")
 public class NewsController {
 
     public static final String NEWS_API_PATH = "/v0/news";
@@ -51,11 +58,15 @@ public class NewsController {
      *
      * @param newsDtoRequest News object to create (required)
      */
+    @Operation(summary = "Save News", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Saved News")
+    })
     @PostMapping
-    public ResponseEntity<ApiResponse<NewsDtoResponse>> save(@RequestBody @Valid NewsDtoRequest newsDtoRequest) {
+    public ResponseEntity<APIResponse<NewsDtoResponse>> save(@RequestBody @Valid NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse news = newsService.save(newsDtoRequest);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "News with ID " + news.getId() + " were created",
                 NEWS_API_PATH,
                 HttpStatus.CREATED,
@@ -68,11 +79,15 @@ public class NewsController {
      *
      * @param pageable page number & page size values to return (not required)
      */
+    @Operation(summary = "Find all News", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all News")
+    })
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<NewsDtoResponse>>> findAll(Pageable pageable) {
+    public ResponseEntity<APIResponse<PageResponse<NewsDtoResponse>>> findAll(Pageable pageable) {
         PageResponse<NewsDtoResponse> news = newsService.findAll(pageable);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "All News: page_number: " + pageable.getPageNumber() +
                         "; page_size: " + pageable.getPageSize(),
                 NEWS_API_PATH,
@@ -87,14 +102,18 @@ public class NewsController {
      * @param searchCriteria News searchCriteria to return (not required)
      * @param pageable page number & page size values to return (not required)
      */
+    @Operation(summary = "Find all News by Criteria", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all News by Criteria")
+    })
     @GetMapping("/criteria")
-    public ResponseEntity<ApiResponse<PageResponse<NewsDtoResponse>>> findAllByCriteria(
+    public ResponseEntity<APIResponse<PageResponse<NewsDtoResponse>>> findAllByCriteria(
             @RequestBody(required = false) NewsCriteria searchCriteria,
             Pageable pageable) {
         searchCriteria = Objects.requireNonNullElse(searchCriteria, NewsCriteria.builder().build());
         PageResponse<NewsDtoResponse> news = newsService.findAllByCriteria(searchCriteria, pageable);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "News by criteria: title: " + searchCriteria.getTitle() +
                         "; text: " + searchCriteria.getText() +
                         "; page_number: " + pageable.getPageNumber() +
@@ -112,13 +131,18 @@ public class NewsController {
      * @param pageable page number & page size values to return (not required)
      * @throws EntityNotFoundException if the News with ID don't exist
      */
+    @Operation(summary = "Find News by ID", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found News by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<NewsDtoResponse>> findById(
+    public ResponseEntity<APIResponse<NewsDtoResponse>> findById(
             @PathVariable @NotNull @PositiveOrZero Long id,
             Pageable pageable) {
         NewsDtoResponse news = newsService.findById(id, pageable);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "News with ID " + news.getId() + " were found: page_number: " +
                         pageable.getPageNumber() + "; page_size: " + pageable.getPageSize(),
                 NEWS_API_PATH + "/" + id,
@@ -134,13 +158,18 @@ public class NewsController {
      * @param newsDtoRequest News object to update (required)
      * @throws EntityNotFoundException if the News with ID don't exist
      */
+    @Operation(summary = "Update News by ID", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated News by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<NewsDtoResponse>> update(
+    public ResponseEntity<APIResponse<NewsDtoResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse news = newsService.update(id, newsDtoRequest);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "Changes were applied to the News with ID " + id,
                 NEWS_API_PATH + "/" + id,
                 HttpStatus.OK,
@@ -155,13 +184,18 @@ public class NewsController {
      * @param newsDtoRequest News object to update (required)
      * @throws EntityNotFoundException if News with ID don't exist
      */
+    @Operation(summary = "Partial Update News by ID", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Partial Updated News by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<NewsDtoResponse>> updatePartially(
+    public ResponseEntity<APIResponse<NewsDtoResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse news = newsService.update(id, newsDtoRequest);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "Partial changes were applied to the News with ID " + id,
                 NEWS_API_PATH + "/" + id,
                 HttpStatus.OK,
@@ -175,11 +209,16 @@ public class NewsController {
      * @param id News ID to return (required)
      * @throws EntityNotFoundException if the News with ID don't exist
      */
+    @Operation(summary = "Delete News by ID", tags = "NewsController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted News by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
+    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
         newsService.deleteById(id);
 
-        return ApiResponse.of(
+        return APIResponse.of(
                 "News with ID " + id + " were deleted",
                 NEWS_API_PATH + "/" + id,
                 HttpStatus.NO_CONTENT,
