@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.ecl.newsservice.aop.annotation.Log;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
 import ru.clevertec.ecl.newsservice.model.criteria.CommentCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.CommentDtoRequest;
@@ -34,6 +35,7 @@ import static ru.clevertec.ecl.newsservice.controller.CommentController.COMMENT_
  *
  * @author Konstantin Voytko
  */
+@Log
 @Validated
 @RestController
 @RequiredArgsConstructor

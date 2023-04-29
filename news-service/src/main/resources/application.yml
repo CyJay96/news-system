@@ -18,3 +18,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     enabled: true
+
+app:
+  cache:
+    algorithm: LRU
+    capacity: 10
