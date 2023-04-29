@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.ApiResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.NewsDtoResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
 import ru.clevertec.ecl.newsservice.service.NewsService;
+
+import java.util.Objects;
 
 import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PATH;
 
@@ -71,6 +74,30 @@ public class NewsController {
                 "All News: page_number: " + pageable.getPageNumber() +
                         "; page_size: " + pageable.getPageSize(),
                 NEWS_API_PATH,
+                HttpStatus.OK,
+                news
+        );
+    }
+
+    /**
+     * GET /api/v0/news : Find News info by criteria
+     *
+     * @param searchCriteria News searchCriteria to return (not required)
+     * @param pageable page number & page size values to return (not required)
+     */
+    @GetMapping("/criteria")
+    public ResponseEntity<ApiResponse<PageResponse<NewsDtoResponse>>> findAllByCriteria(
+            @RequestBody(required = false) NewsCriteria searchCriteria,
+            Pageable pageable) {
+        searchCriteria = Objects.requireNonNullElse(searchCriteria, NewsCriteria.builder().build());
+        PageResponse<NewsDtoResponse> news = newsService.findAllByCriteria(searchCriteria, pageable);
+
+        return ApiResponse.of(
+                "News by criteria: title: " + searchCriteria.getTitle() +
+                        "; text: " + searchCriteria.getText() +
+                        "; page_number: " + pageable.getPageNumber() +
+                        "; page_size: " + pageable.getPageSize(),
+                NEWS_API_PATH + "/criteria",
                 HttpStatus.OK,
                 news
         );

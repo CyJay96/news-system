@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.model.criteria.CommentCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.CommentDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.ApiResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.CommentDtoResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
 import ru.clevertec.ecl.newsservice.service.CommentService;
+
+import java.util.Objects;
 
 import static ru.clevertec.ecl.newsservice.controller.CommentController.COMMENT_API_PATH;
 
@@ -74,6 +77,30 @@ public class CommentController {
                 "All Comments: page_number: " + pageable.getPageNumber() +
                         "; page_size: " + pageable.getPageSize(),
                 COMMENT_API_PATH,
+                HttpStatus.OK,
+                comments
+        );
+    }
+
+    /**
+     * GET /api/v0/comments : Find Comments info by criteria
+     *
+     * @param searchCriteria Comments searchCriteria to return (not required)
+     * @param pageable page number & page size values to return (not required)
+     */
+    @GetMapping("/criteria")
+    public ResponseEntity<ApiResponse<PageResponse<CommentDtoResponse>>> findAllByCriteria(
+            @RequestBody(required = false) CommentCriteria searchCriteria,
+            Pageable pageable) {
+        searchCriteria = Objects.requireNonNullElse(searchCriteria, CommentCriteria.builder().build());
+        PageResponse<CommentDtoResponse> comments = commentService.findAllByCriteria(searchCriteria, pageable);
+
+        return ApiResponse.of(
+                "Comments by criteria: text: " + searchCriteria.getText() +
+                        "; username: " + searchCriteria.getUsername() +
+                        "; page_number: " + pageable.getPageNumber() +
+                        "; page_size: " + pageable.getPageSize(),
+                COMMENT_API_PATH + "/criteria",
                 HttpStatus.OK,
                 comments
         );

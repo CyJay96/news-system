@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
 import ru.clevertec.ecl.newsservice.mapper.CommentMapper;
 import ru.clevertec.ecl.newsservice.mapper.NewsMapper;
+import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.CommentDtoResponse;
 import ru.clevertec.ecl.newsservice.model.dto.response.NewsDtoResponse;
@@ -16,6 +17,7 @@ import ru.clevertec.ecl.newsservice.model.entity.News;
 import ru.clevertec.ecl.newsservice.repository.CommentRepository;
 import ru.clevertec.ecl.newsservice.repository.NewsRepository;
 import ru.clevertec.ecl.newsservice.service.NewsService;
+import ru.clevertec.ecl.newsservice.service.searcher.NewsSearcher;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
 
+    private final NewsSearcher newsSearcher;
     private final NewsRepository newsRepository;
     private final CommentRepository commentRepository;
     private final NewsMapper newsMapper;
@@ -37,6 +40,25 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public PageResponse<NewsDtoResponse> findAll(Pageable pageable) {
         Page<News> newsPage = newsRepository.findAll(pageable);
+
+        List<NewsDtoResponse> newsDtoResponses = newsPage.stream()
+                .map(newsMapper::toNewsDtoResponse)
+                .toList();
+
+        return PageResponse.<NewsDtoResponse>builder()
+                .content(newsDtoResponses)
+                .number(pageable.getPageNumber())
+                .size(pageable.getPageSize())
+                .numberOfElements(newsDtoResponses.size())
+                .build();
+    }
+
+    @Override
+    public PageResponse<NewsDtoResponse> findAllByCriteria(NewsCriteria searchCriteria, Pageable pageable) {
+        searchCriteria.setPage(pageable.getPageNumber());
+        searchCriteria.setSize(pageable.getPageSize());
+
+        Page<News> newsPage = newsSearcher.getNewsByCriteria(searchCriteria);
 
         List<NewsDtoResponse> newsDtoResponses = newsPage.stream()
                 .map(newsMapper::toNewsDtoResponse)
