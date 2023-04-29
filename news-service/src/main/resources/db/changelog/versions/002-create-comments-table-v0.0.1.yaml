@@ -22,6 +22,7 @@ databaseChangeLog:
               - column:
                   name: time
                   type: timestamp(6)
+                  defaultValue: "NOW()"
                   constraints:
                     nullable: false
 

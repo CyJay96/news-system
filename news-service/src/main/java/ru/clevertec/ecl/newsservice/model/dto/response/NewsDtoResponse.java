@@ -12,13 +12,13 @@ import java.time.OffsetDateTime;
 @Schema(description = "News DTO Response")
 public class NewsDtoResponse implements Serializable {
 
-    Long id;
+    private Long id;
 
-    OffsetDateTime time;
+    private OffsetDateTime time;
 
-    String title;
+    private String title;
 
-    String text;
+    private String text;
 
-    PageResponse<CommentDtoResponse> comments;
+    private PageResponse<CommentDtoResponse> comments;
 }

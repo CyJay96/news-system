@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 002v0.0.1
+      author: github.com/CyJay96
+      comment: Create USERS table
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: phone
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: create_date
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_update_date
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: varchar(255)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
