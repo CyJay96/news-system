@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @Schema(description = "News DTO Request")
-public class NewsDtoRequest {
+public class NewsDtoRequest implements Serializable {
 
     @NotBlank(message = "Title cannot be empty")
     private String title;

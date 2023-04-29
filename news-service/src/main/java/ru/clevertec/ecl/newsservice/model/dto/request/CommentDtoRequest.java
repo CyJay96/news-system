@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @Schema(description = "Comment DTO Request")
-public class CommentDtoRequest {
+public class CommentDtoRequest implements Serializable {
 
     @NotBlank(message = "Text cannot be empty")
     private String text;

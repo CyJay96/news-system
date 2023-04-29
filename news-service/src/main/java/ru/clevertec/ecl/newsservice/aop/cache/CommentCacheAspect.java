@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.ecl.newsservice.model.entity.Comment;
 import ru.clevertec.ecl.newsservice.util.cache.Cache;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Aspect
 @Component
+@Profile("dev")
 public class CommentCacheAspect {
 
     private final Cache<Long, Comment> cache;

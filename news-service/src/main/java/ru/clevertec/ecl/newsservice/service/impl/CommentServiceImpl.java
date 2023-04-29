@@ -1,6 +1,8 @@
 package ru.clevertec.ecl.newsservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
 
     @Override
+    @CacheEvict(value = "comments", allEntries = true)
     public CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest) {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new EntityNotFoundException(News.class, newsId));
@@ -41,6 +44,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = "comments")
     public PageResponse<CommentDtoResponse> findAll(Pageable pageable) {
         Page<Comment> commentPage = commentRepository.findAll(pageable);
 
@@ -76,6 +80,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = "comments")
     public CommentDtoResponse findById(Long id) {
         return commentRepository.findById(id)
                 .map(commentMapper::toCommentDtoResponse)
@@ -83,6 +88,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = "comments")
     public CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Comment.class, id));
@@ -91,6 +97,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @CacheEvict(value = "comments", allEntries = true)
     public void deleteById(Long id) {
         if (!commentRepository.existsById(id)) {
             throw new EntityNotFoundException(Comment.class, id);
