@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include: # Create main tables and foreign keys
+      file: db/changelog/db.changelog-master.yaml
+  - include: # Insert TEST data
+      file: db/changelog/test/001-insert-test-data-v0.0.1.yaml
