@@ -1,6 +1,8 @@
 package ru.clevertec.ecl.newsservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,12 +34,14 @@ public class NewsServiceImpl implements NewsService {
     private final CommentMapper commentMapper;
 
     @Override
+    @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse save(NewsDtoRequest newsDtoRequest) {
         News savedNews = newsRepository.save(newsMapper.toNews(newsDtoRequest));
         return newsMapper.toNewsDtoResponse(savedNews);
     }
 
     @Override
+    @Cacheable(value = "news")
     public PageResponse<NewsDtoResponse> findAll(Pageable pageable) {
         Page<News> newsPage = newsRepository.findAll(pageable);
 
@@ -73,6 +77,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Cacheable(value = "news")
     public NewsDtoResponse findById(Long id, Pageable pageable) {
         NewsDtoResponse newsDtoResponse = newsRepository.findById(id)
                 .map(newsMapper::toNewsDtoResponse)
@@ -94,6 +99,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(News.class, id));
@@ -102,6 +108,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @CacheEvict(value = "news", allEntries = true)
     public void deleteById(Long id) {
         if (!newsRepository.existsById(id)) {
             throw new EntityNotFoundException(News.class, id);
