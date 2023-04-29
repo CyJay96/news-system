@@ -45,6 +45,8 @@ public class Comment implements BaseEntity<Long> {
 
     private String username;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private News news;
 }
