@@ -1,3 +1,4 @@
 rootProject.name = 'news-system'
 
 includeBuild 'news-service'
+includeBuild 'auth-service'
