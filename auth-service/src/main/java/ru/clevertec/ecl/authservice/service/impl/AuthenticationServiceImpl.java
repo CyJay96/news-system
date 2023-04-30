@@ -25,7 +25,7 @@ import ru.clevertec.ecl.authservice.service.UserService;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static ru.clevertec.ecl.authservice.model.enums.Role.ROLE_SUBSCRIBER;
+import static ru.clevertec.ecl.authservice.model.enums.Role.ROLE_USER;
 import static ru.clevertec.ecl.authservice.model.enums.Status.ACTIVE;
 
 @Service
@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .password(passwordEncoder.encode(userRequestDto.getPassword()))
                     .email(userRequestDto.getEmail())
                     .roles(List.of(
-                            roleRepository.findByName(ROLE_SUBSCRIBER.name())
+                            roleRepository.findByName(ROLE_USER.name())
                                     .orElseThrow(() -> new EntityNotFoundException(Role.class))
                     ))
                     .createDate(OffsetDateTime.now())
