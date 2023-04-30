@@ -1,8 +1,11 @@
 server:
+  port: 0
   servlet:
     context-path: /api
 
 spring:
+  application:
+    name: auth-service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:news_system_auth}
@@ -23,3 +26,8 @@ jwt:
   token:
     secret: newssystemauth
     expired: 3600000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

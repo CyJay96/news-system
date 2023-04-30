@@ -1,4 +1,6 @@
 rootProject.name = 'news-system'
 
+includeBuild 'eureka-server'
+includeBuild 'api-gateway'
 includeBuild 'news-service'
 includeBuild 'auth-service'
