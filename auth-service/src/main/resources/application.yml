@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8082
   servlet:
     context-path: /api
 
@@ -21,6 +21,19 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     enabled: true
+  rabbitmq:
+    host: localhost
+    virtual-host: /
+    port: 15672
+    username: guest
+    password: guest
+
+mp:
+  rabbitmq:
+    queue: user.queue
+    delay:
+      routing-key: user.delayed.queue
+      exchange: user.delay.exchange
 
 jwt:
   token:
@@ -30,4 +43,4 @@ jwt:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE:http://localhost:8761/eureka}

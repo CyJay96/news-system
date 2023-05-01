@@ -3,5 +3,7 @@ databaseChangeLog:
       file: db/changelog/versions/001-create-news-table-v0.0.1.yaml
   - include: # Create COMMENTS table
       file: db/changelog/versions/002-create-comments-table-v0.0.1.yaml
+  - include: # Create USERNAMES table
+      file: db/changelog/versions/003-create-usernames-table-v0.0.1.yaml
   - include: # Create FOREIGN keys
-      file: db/changelog/versions/003-create-foreign-keys-v0.0.1.yaml
+      file: db/changelog/versions/004-create-foreign-keys-v0.0.1.yaml

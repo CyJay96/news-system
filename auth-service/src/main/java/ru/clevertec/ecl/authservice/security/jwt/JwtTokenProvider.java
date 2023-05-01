@@ -18,10 +18,8 @@ import ru.clevertec.ecl.authservice.exception.TokenExpirationException;
 import ru.clevertec.ecl.authservice.model.entity.Role;
 import ru.clevertec.ecl.authservice.model.entity.User;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -34,6 +32,10 @@ public class JwtTokenProvider {
     @Value("${jwt.token.expired}")
     private Long validityInMs;
 
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private static final String USER_ROLES_FIELD = "roles";
+
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
@@ -43,7 +45,9 @@ public class JwtTokenProvider {
 
     public String createToken(final User user) {
         final Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("roles", getRoleNames(user.getRoles()));
+        claims.put(USER_ROLES_FIELD, user.getRoles().stream()
+                .map(Role::getName)
+                .toList());
 
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMs);
@@ -71,9 +75,9 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        final String bearerToken = request.getHeader("Authorization");
-        if (Objects.nonNull(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(   7);
+        final String bearerToken = request.getHeader(AUTHORIZATION);
+        if (Objects.nonNull(bearerToken) && bearerToken.startsWith(BEARER)) {
+            return bearerToken.substring(BEARER.length());
         }
         return null;
     }
@@ -88,11 +92,5 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             throw new TokenExpirationException();
         }
-    }
-
-    private List<String> getRoleNames(final List<Role> userRoles) {
-        final List<String> result = new ArrayList<>();
-        userRoles.forEach(role -> result.add(role.getName()));
-        return result;
     }
 }

@@ -36,7 +36,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class User {
+public class User implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

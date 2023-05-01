@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.ecl.authservice.model.dto.request.SignInRequestDto;
-import ru.clevertec.ecl.authservice.model.dto.request.SignUpRequestDto;
+import ru.clevertec.ecl.authservice.model.dto.request.LoginRequestDto;
+import ru.clevertec.ecl.authservice.model.dto.request.RegisterRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.response.APIResponse;
 import ru.clevertec.ecl.authservice.model.dto.response.AuthDtoResponse;
 import ru.clevertec.ecl.authservice.service.AuthenticationService;
@@ -30,13 +30,13 @@ public class AuthenticationController {
     /**
      * POST /api/v0/auth : Create a new User
      *
-     * @param userRequestDto Sign Up Request object to create (required)
+     * @param registerRequestDto Register Request object to create (required)
      */
-    @PostMapping("/signup")
-    public ResponseEntity<APIResponse<AuthDtoResponse>> signUp(@RequestBody @Valid SignUpRequestDto userRequestDto) {
-        AuthDtoResponse authResponse = authenticationService.signUp(userRequestDto);
+    @PostMapping("/register")
+    public ResponseEntity<APIResponse<AuthDtoResponse>> register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
+        AuthDtoResponse authResponse = authenticationService.register(registerRequestDto);
         return APIResponse.of(
-                "User with ID " + authResponse.getUser().getId() + " was created",
+                "User was created",
                 AUTH_API_PATH,
                 HttpStatus.CREATED,
                 authResponse
@@ -46,13 +46,13 @@ public class AuthenticationController {
     /**
      * POST /api/v0/auth : Authorize a User
      *
-     * @param userRequestDto Sign Up Request object to authorize (required)
+     * @param loginRequestDto Login Request object to authorize (required)
      */
-    @PostMapping("/signin")
-    public ResponseEntity<APIResponse<AuthDtoResponse>> signIn(@RequestBody @Valid SignInRequestDto userRequestDto) {
-        AuthDtoResponse authResponse = authenticationService.signIn(userRequestDto);
+    @PostMapping("/login")
+    public ResponseEntity<APIResponse<AuthDtoResponse>> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+        AuthDtoResponse authResponse = authenticationService.login(loginRequestDto);
         return APIResponse.of(
-                "User with ID " + authResponse.getUser().getId() + " was authorized",
+                "User was authorized",
                 AUTH_API_PATH,
                 HttpStatus.OK,
                 authResponse

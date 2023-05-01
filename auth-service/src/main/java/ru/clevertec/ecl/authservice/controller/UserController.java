@@ -41,7 +41,7 @@ public class UserController {
      * @param pageable page number & page size values to return (not required)
      */
     @GetMapping
-    public ResponseEntity<APIResponse<PageResponse<UserDtoResponse>>> getAll(Pageable pageable) {
+    public ResponseEntity<APIResponse<PageResponse<UserDtoResponse>>> findAll(Pageable pageable) {
         PageResponse<UserDtoResponse> users = userService.getAll(pageable);
 
         return APIResponse.of(
@@ -60,12 +60,30 @@ public class UserController {
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<UserDtoResponse>> getById(@PathVariable @NotNull @PositiveOrZero Long id) {
+    public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         UserDtoResponse user = userService.getById(id);
 
         return APIResponse.of(
                 "User with ID " + user.getId() + " was found",
                 USER_API_PATH + "/" + id,
+                HttpStatus.OK,
+                user
+        );
+    }
+
+    /**
+     * GET /api/v0/users/byUsername/{username} : Find User info
+     *
+     * @param username User username to return (required)
+     * @throws EntityNotFoundException if the User with username doesn't exist
+     */
+    @GetMapping("/byUsername/{username}")
+    public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull String username) {
+        UserDtoResponse user = userService.getByUsername(username);
+
+        return APIResponse.of(
+                "User with username " + user.getUsername() + " was found",
+                USER_API_PATH + "/" + username,
                 HttpStatus.OK,
                 user
         );

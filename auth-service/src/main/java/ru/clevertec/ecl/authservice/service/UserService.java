@@ -12,6 +12,8 @@ public interface UserService {
 
     UserDtoResponse getById(Long id);
 
+    UserDtoResponse getByUsername(String username);
+
     User getEntityByUsername(String username);
 
     UserDtoResponse update(Long id, UserDtoRequest userDtoRequest);
