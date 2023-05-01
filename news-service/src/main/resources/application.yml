@@ -7,7 +7,7 @@ spring:
   application:
     name: news-service
   rabbitmq:
-    host: localhost
+    host: ${RABBITMQ_HOST:localhost}
     virtual-host: /
     port: 15672
     username: guest
@@ -23,4 +23,4 @@ mp:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE:http://localhost:8761/eureka/}
