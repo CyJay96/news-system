@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
 
 import java.util.Optional;
@@ -35,6 +36,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<APIResponse<Void>> handleEntityNotFoundException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(NoPermissionsException.class)
+    public ResponseEntity<APIResponse<Void>> handleNoPermissionsException(
             RuntimeException exception,
             HttpServletRequest request
     ) {

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.mapper.CommentMapper;
 import ru.clevertec.ecl.newsservice.mapper.NewsMapper;
 import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
@@ -32,12 +33,17 @@ public class NewsServiceImpl implements NewsService {
     private final CommentRepository commentRepository;
     private final NewsMapper newsMapper;
     private final CommentMapper commentMapper;
+    private final UserHelper userHelper;
 
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse save(NewsDtoRequest newsDtoRequest) {
-        News savedNews = newsRepository.save(newsMapper.toNews(newsDtoRequest));
-        return newsMapper.toNewsDtoResponse(savedNews);
+        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+            throw new NoPermissionsException();
+        }
+
+        News news = newsMapper.toNews(newsDtoRequest);
+        return newsMapper.toNewsDtoResponse(newsRepository.save(news));
     }
 
     @Override
@@ -101,6 +107,10 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest) {
+        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+            throw new NoPermissionsException();
+        }
+
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(News.class, id));
         newsMapper.updateNews(newsDtoRequest, news);
@@ -110,6 +120,10 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public void deleteById(Long id) {
+        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+            throw new NoPermissionsException();
+        }
+
         if (!newsRepository.existsById(id)) {
             throw new EntityNotFoundException(News.class, id);
         }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.mapper.CommentMapper;
 import ru.clevertec.ecl.newsservice.model.criteria.CommentCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.CommentDtoRequest;
@@ -29,10 +30,15 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final NewsRepository newsRepository;
     private final CommentMapper commentMapper;
+    private final UserHelper userHelper;
 
     @Override
     @CacheEvict(value = "comments", allEntries = true)
     public CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest) {
+        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+            throw new NoPermissionsException();
+        }
+
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new EntityNotFoundException(News.class, newsId));
 
@@ -90,6 +96,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Cacheable(value = "comments")
     public CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest) {
+        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+            throw new NoPermissionsException();
+        }
+
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Comment.class, id));
         commentMapper.updateComment(commentDtoRequest, comment);
@@ -99,6 +109,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @CacheEvict(value = "comments", allEntries = true)
     public void deleteById(Long id) {
+        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+            throw new NoPermissionsException();
+        }
+
         if (!commentRepository.existsById(id)) {
             throw new EntityNotFoundException(Comment.class, id);
         }

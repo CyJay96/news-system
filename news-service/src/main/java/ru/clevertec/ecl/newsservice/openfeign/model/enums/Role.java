@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.authservice.model.enums;
+package ru.clevertec.ecl.newsservice.openfeign.model.enums;
 
 public enum Role {
 
