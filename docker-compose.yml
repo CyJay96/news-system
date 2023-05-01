@@ -44,6 +44,7 @@ services:
       RABBITMQ_HOST: rabbitmq
     depends_on:
       - eureka-server
+      - rabbitmq
     networks:
       - postgres-network
     restart: unless-stopped
@@ -63,6 +64,7 @@ services:
       RABBITMQ_HOST: rabbitmq
     depends_on:
       - eureka-server
+      - rabbitmq
     networks:
       - postgres-network
     restart: unless-stopped
@@ -91,10 +93,14 @@ services:
     restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.10.2-management
+    container_name: rabbitmq
     ports:
-      - "15672:15672"
       - "5672:5672"
+      - "15672:15672"
+    networks:
+      - postgres-network
+    restart: unless-stopped
 
 networks:
   postgres-network:
