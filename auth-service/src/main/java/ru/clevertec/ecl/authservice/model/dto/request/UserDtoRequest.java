@@ -1,6 +1,7 @@
 package ru.clevertec.ecl.authservice.model.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -18,6 +19,7 @@ import static ru.clevertec.ecl.authservice.util.Constants.PHONE_REGEX;
 
 @Data
 @Builder
+@Schema(description = "User DTO Request")
 public class UserDtoRequest implements Serializable {
 
     @NotBlank(message = "Username cannot be empty")

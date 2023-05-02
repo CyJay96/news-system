@@ -1,6 +1,17 @@
 version: '3.9'
 
 services:
+  config-service:
+    build:
+      dockerfile: config-service/Dockerfile
+      context: ./
+    image: cyjay96/config-service
+    ports:
+      - "8088:8088"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
   eureka-server:
     build:
       dockerfile: eureka-server/Dockerfile
@@ -9,7 +20,9 @@ services:
     ports:
       - "8761:8761"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - config-service
     networks:
       - postgres-network
     restart: unless-stopped
@@ -22,42 +35,43 @@ services:
     ports:
       - "8765:8765"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - eureka-server
     networks:
       - postgres-network
     restart: unless-stopped
 
-  news-service-api:
+  news-service:
     build:
       dockerfile: news-service/Dockerfile
       context: ./
-    image: cyjay96/news-service-api
+    image: cyjay96/news-service
     ports:
       - "8081:8081"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_PROFILES_ACTIVE: docker
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: news_system_dev
       RABBITMQ_HOST: rabbitmq
     depends_on:
       - eureka-server
+      - auth-service
       - rabbitmq
     networks:
       - postgres-network
     restart: unless-stopped
 
-  auth-service-api:
+  auth-service:
     build:
       dockerfile: auth-service/Dockerfile
       context: ./
-    image: cyjay96/auth-service-api
+    image: cyjay96/auth-service
     ports:
       - "8082:8082"
     environment:
-      EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_PROFILES_ACTIVE: docker
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: news_system_auth

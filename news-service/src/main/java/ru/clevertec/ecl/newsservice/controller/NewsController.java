@@ -49,7 +49,7 @@ import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PA
 @Tag(name = "NewsController", description = "News API")
 public class NewsController {
 
-    public static final String NEWS_API_PATH = "/v0/news";
+    public static final String NEWS_API_PATH = "/api/v0/news";
 
     private final NewsService newsService;
 

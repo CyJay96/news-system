@@ -1,5 +1,11 @@
 package ru.clevertec.ecl.authservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -25,13 +31,19 @@ import ru.clevertec.ecl.authservice.service.UserService;
 
 import static ru.clevertec.ecl.authservice.controller.UserController.USER_API_PATH;
 
+/**
+ * User API
+ *
+ * @author Konstantin Voytko
+ */
 @RestController
 @Validated
 @RequestMapping(value = USER_API_PATH)
 @RequiredArgsConstructor
+@Tag(name = "UserController", description = "User API")
 public class UserController {
 
-    public static final String USER_API_PATH = "/v0/users";
+    public static final String USER_API_PATH = "/api/v0/users";
 
     private final UserService userService;
 
@@ -40,6 +52,10 @@ public class UserController {
      *
      * @param pageable page number & page size values to return (not required)
      */
+    @Operation(summary = "Find all Users", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all Users")
+    })
     @GetMapping
     public ResponseEntity<APIResponse<PageResponse<UserDtoResponse>>> findAll(Pageable pageable) {
         PageResponse<UserDtoResponse> users = userService.getAll(pageable);
@@ -59,6 +75,11 @@ public class UserController {
      * @param id User ID to return (required)
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
+    @Operation(summary = "Find User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         UserDtoResponse user = userService.getById(id);
@@ -77,6 +98,11 @@ public class UserController {
      * @param username User username to return (required)
      * @throws EntityNotFoundException if the User with username doesn't exist
      */
+    @Operation(summary = "Find User by Username", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found User by Username"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @GetMapping("/byUsername/{username}")
     public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull String username) {
         UserDtoResponse user = userService.getByUsername(username);
@@ -96,6 +122,12 @@ public class UserController {
      * @param userDtoRequest User object to update (required)
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
+    @Operation(summary = "Update User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "409", description = "User with such name or email already exists", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> update(
             @PathVariable @NotNull @PositiveOrZero Long id,
@@ -117,6 +149,12 @@ public class UserController {
      * @param userDtoRequest User object to update (required)
      * @throws EntityNotFoundException if User with ID doesn't exist
      */
+    @Operation(summary = "Partial Update User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Partial Updated User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "409", description = "User with such name or email already exists", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> updatePartially(
             @PathVariable @NotNull @PositiveOrZero Long id,
@@ -137,6 +175,11 @@ public class UserController {
      * @param id User ID to return (required)
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
+    @Operation(summary = "Block User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Blocked User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PatchMapping("/block/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> blockById(@PathVariable @NotNull @PositiveOrZero Long id) {
         UserDtoResponse user = userService.block(id);
@@ -155,6 +198,11 @@ public class UserController {
      * @param id User ID to return (required)
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
+    @Operation(summary = "Unblock User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Unblocked User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PatchMapping("/unblock/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> unblockById(@PathVariable @NotNull @PositiveOrZero Long id) {
         UserDtoResponse user = userService.unblock(id);
@@ -173,6 +221,11 @@ public class UserController {
      * @param id User ID to return (required)
      * @throws EntityNotFoundException if the User with ID doesn't exist
      */
+    @Operation(summary = "Delete User by ID", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted User by ID"),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
         UserDtoResponse user = userService.deleteById(id);

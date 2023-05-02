@@ -1,5 +1,11 @@
 package ru.clevertec.ecl.authservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,13 +23,19 @@ import ru.clevertec.ecl.authservice.service.AuthenticationService;
 
 import static ru.clevertec.ecl.authservice.controller.AuthenticationController.AUTH_API_PATH;
 
+/**
+ * Authentication API
+ *
+ * @author Konstantin Voytko
+ */
 @RestController
 @Validated
 @RequestMapping(value = AUTH_API_PATH)
 @RequiredArgsConstructor
+@Tag(name = "AuthenticationController", description = "Authentication API")
 public class AuthenticationController {
 
-    public static final String AUTH_API_PATH = "/v0/auth";
+    public static final String AUTH_API_PATH = "/api/v0/auth";
 
     private final AuthenticationService authenticationService;
 
@@ -32,6 +44,11 @@ public class AuthenticationController {
      *
      * @param registerRequestDto Register Request object to create (required)
      */
+    @Operation(summary = "Register User", tags = "AuthenticationController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Registered User"),
+            @ApiResponse(responseCode = "409", description = "User with such name or email already exists", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PostMapping("/register")
     public ResponseEntity<APIResponse<AuthDtoResponse>> register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
         AuthDtoResponse authResponse = authenticationService.register(registerRequestDto);
@@ -48,6 +65,11 @@ public class AuthenticationController {
      *
      * @param loginRequestDto Login Request object to authorize (required)
      */
+    @Operation(summary = "Authorize User", tags = "AuthenticationController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorized User"),
+            @ApiResponse(responseCode = "400", description = "Invalid username or password", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
     @PostMapping("/login")
     public ResponseEntity<APIResponse<AuthDtoResponse>> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         AuthDtoResponse authResponse = authenticationService.login(loginRequestDto);

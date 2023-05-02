@@ -51,7 +51,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    public static final String COMMENT_API_PATH = "/v0/comments";
+    public static final String COMMENT_API_PATH = "/api/v0/comments";
 
     /**
      * POST /api/v0/comments : Create a new Comment

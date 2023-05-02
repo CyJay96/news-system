@@ -10,7 +10,7 @@ public class OpenApiConfig {
 
     private static final String TITLE = "News Management System";
     private static final String DESCRIPTION = "RESTful web-service that implements functionality " +
-            "for workingwith a news management system";
+            "for working with a news management system";
     private static final String VERSION = "0.0.1-SNAPSHOT";
 
     @Bean

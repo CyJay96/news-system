@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.authservice.model.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import static ru.clevertec.ecl.authservice.util.Constants.EMAIL_REGEX;
 
 @Data
 @Builder
+@Schema(description = "Register DTO Request")
 public class RegisterRequestDto implements Serializable {
 
     @NotBlank(message = "Username cannot be empty")
