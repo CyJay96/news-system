@@ -2,7 +2,7 @@ spring:
   config:
     import:
       - "optional:configserver:http://config-service:8088"
-      - "classpath:application-prod.yml"
+      - "classpath:application-dev.yml"
     activate:
       on-profile: docker
 
@@ -20,6 +20,11 @@ mp:
       routing-key: user.delayed.queue
       exchange: user.delay.exchange
 
+app:
+  user-feign-client:
+    host: auth-service
+
+
 ---
 
 spring:
@@ -28,7 +33,7 @@ spring:
   config:
     import:
       - "optional:configserver:http://localhost:8088"
-      - "classpath:application-prod.yml"
+      - "classpath:application-dev.yml"
 
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
@@ -43,3 +48,7 @@ mp:
     delay:
       routing-key: user.delayed.queue
       exchange: user.delay.exchange
+
+app:
+  user-feign-client:
+    host: auth-service

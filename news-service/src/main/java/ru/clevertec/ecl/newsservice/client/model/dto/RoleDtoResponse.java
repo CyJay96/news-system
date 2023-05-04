@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.newsservice.openfeign.model.dto;
+package ru.clevertec.ecl.newsservice.client.model.dto;
 
 import lombok.Builder;
 import lombok.Data;

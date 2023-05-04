@@ -1,8 +1,8 @@
-package ru.clevertec.ecl.newsservice.openfeign.model.dto;
+package ru.clevertec.ecl.newsservice.client.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.clevertec.ecl.newsservice.openfeign.model.enums.Status;
+import ru.clevertec.ecl.newsservice.client.model.enums.Status;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;

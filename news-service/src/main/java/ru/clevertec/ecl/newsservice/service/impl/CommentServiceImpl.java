@@ -94,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comments")
+    @CacheEvict(value = "comments", allEntries = true)
     public CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest) {
         if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
             throw new NoPermissionsException();
@@ -116,6 +116,7 @@ public class CommentServiceImpl implements CommentService {
         if (!commentRepository.existsById(id)) {
             throw new EntityNotFoundException(Comment.class, id);
         }
+
         commentRepository.deleteById(id);
     }
 }

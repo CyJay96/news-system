@@ -1,0 +1,31 @@
+{
+  "timestamp": "2023-05-02T23:28:48.4426202+03:00",
+  "status": 200,
+  "message": "User with username Mike was found",
+  "path": "/api/v0/users/Mike",
+  "data": {
+    "id": 1,
+    "username": "Mike",
+    "first_name": null,
+    "last_name": null,
+    "email": "mike@example.com",
+    "phone": null,
+    "createDate": "2023-05-02T10:41:30.200507+03:00",
+    "lastUpdateDate": "2023-05-02T10:41:30.200507+03:00",
+    "roles": [
+      {
+        "id": 1,
+        "name": "ROLE_SUBSCRIBER"
+      },
+      {
+        "id": 2,
+        "name": "ROLE_JOURNALIST"
+      },
+      {
+        "id": 3,
+        "name": "ROLE_ADMIN"
+      }
+    ],
+    "status": "ACTIVE"
+  }
+}

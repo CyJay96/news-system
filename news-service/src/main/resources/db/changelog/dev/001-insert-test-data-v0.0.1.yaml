@@ -52,3 +52,6 @@ databaseChangeLog:
               ('2023-03-26 09:39:41.571089', 'GitHub Codespaces will be a game changer', 'Lucas', 18),
               ('2023-04-24 19:22:02.571089', 'IntelliJ IDEA 2022.1 is finally here!', 'Sophia', 19),
               ('2023-03-16 16:25:21.867392', 'Vue.js 4.0 brings many improvements', 'Jacob', 20);
+
+            INSERT INTO usernames(username) VALUES
+              ('Mike');
