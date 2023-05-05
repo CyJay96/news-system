@@ -18,9 +18,10 @@ public class UserHelper {
 
     public boolean isAdmin(String token) {
         UserDtoResponse user = userFeignClient.findByToken(token.split(" ")[1]).getBody().getData();
-        return user.getRoles().stream()
+        boolean b = user.getRoles().stream()
                 .map(RoleDtoResponse::getName)
                 .anyMatch(roleName -> roleName.equals(ROLE_ADMIN.name()));
+        return b;
     }
 
     public boolean isJournalist(String token) {
