@@ -43,9 +43,6 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.liquibase:liquibase-core'
 
-    // RabbitMQ
-    implementation 'org.springframework.boot:spring-boot-starter-amqp'
-
     // OpenApi
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0'
 

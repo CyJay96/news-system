@@ -28,12 +28,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.clevertec.ecl.newsservice.controller.CommentController.COMMENT_API_PATH;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
 
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class CommentControllerTest extends BaseIntegrationTest {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String PAGE_PARAM = "page";
+    private static final String SIZE_PARAM = "size";
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -53,6 +58,7 @@ class CommentControllerTest extends BaseIntegrationTest {
         Long expectedNewsId = newsRepository.findFirstByOrderByIdAsc().get().getId();
         mockMvc.perform(post(COMMENT_API_PATH + "/{newsId}", expectedNewsId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
                         .content(objectMapper.writeValueAsString(commentDtoRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data").isNotEmpty())
@@ -65,8 +71,9 @@ class CommentControllerTest extends BaseIntegrationTest {
         int expectedCommentsSize = (int) commentRepository.count();
         mockMvc.perform(get(COMMENT_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("page", String.valueOf(TEST_PAGE))
-                        .param("size", String.valueOf(TEST_PAGE_SIZE)))
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                        .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                        .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isNotEmpty())
                 .andExpect(jsonPath("$.data.content.size()").value(expectedCommentsSize));
@@ -78,9 +85,10 @@ class CommentControllerTest extends BaseIntegrationTest {
         int expectedCommentsSize = 2;
         mockMvc.perform(get(COMMENT_API_PATH + "/criteria")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(searchCriteria))
-                        .param("page", String.valueOf(TEST_PAGE))
-                        .param("size", String.valueOf(TEST_PAGE_SIZE)))
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                        .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                        .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE))
+                        .content(objectMapper.writeValueAsString(searchCriteria)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isNotEmpty())
                 .andExpect(jsonPath("$.data.content.size()").value(expectedCommentsSize));
@@ -93,7 +101,8 @@ class CommentControllerTest extends BaseIntegrationTest {
         @ValueSource(longs = {1L, 2L, 3L})
         void checkFindByIdShouldReturnCommentDtoResponse(Long id) throws Exception {
             mockMvc.perform(get(COMMENT_API_PATH + "/{id}", id)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.id").value(id));
@@ -105,7 +114,8 @@ class CommentControllerTest extends BaseIntegrationTest {
             long doesntExistCommentId = new Random()
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(get(COMMENT_API_PATH + "/{id}", doesntExistCommentId)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isNotFound());
         }
     }
@@ -118,6 +128,7 @@ class CommentControllerTest extends BaseIntegrationTest {
         void checkUpdateShouldReturnCommentDtoResponse(Long id) throws Exception {
             mockMvc.perform(put(COMMENT_API_PATH + "/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(commentDtoRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
@@ -130,6 +141,7 @@ class CommentControllerTest extends BaseIntegrationTest {
         void checkUpdatePartiallyShouldReturnCommentDtoResponse(Long id) throws Exception {
             mockMvc.perform(patch(COMMENT_API_PATH + "/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(commentDtoRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
@@ -143,6 +155,7 @@ class CommentControllerTest extends BaseIntegrationTest {
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(put(COMMENT_API_PATH + "/{id}", doesntExistCommentId)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(commentDtoRequest)))
                     .andExpect(status().isNotFound());
         }
@@ -154,6 +167,7 @@ class CommentControllerTest extends BaseIntegrationTest {
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(patch(COMMENT_API_PATH + "/{id}", doesntExistCommentId)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(commentDtoRequest)))
                     .andExpect(status().isNotFound());
         }
@@ -166,7 +180,8 @@ class CommentControllerTest extends BaseIntegrationTest {
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnVoid(Long id) throws Exception {
             mockMvc.perform(delete(COMMENT_API_PATH + "/{id}", id)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isNoContent());
         }
 
@@ -176,7 +191,8 @@ class CommentControllerTest extends BaseIntegrationTest {
             long doesntExistCommentId = new Random()
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(delete(COMMENT_API_PATH + "/{id}", doesntExistCommentId)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isNotFound());
         }
     }

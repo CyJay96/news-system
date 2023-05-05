@@ -27,12 +27,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PATH;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
 
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class NewsControllerTest extends BaseIntegrationTest {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String PAGE_PARAM = "page";
+    private static final String SIZE_PARAM = "size";
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -50,6 +55,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     void checkSaveShouldReturnNewsDtoResponse() throws Exception {
         mockMvc.perform(post(NEWS_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
                         .content(objectMapper.writeValueAsString(newsDtoRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data").isNotEmpty())
@@ -62,8 +68,9 @@ class NewsControllerTest extends BaseIntegrationTest {
         int expectedNewsSize = (int) newsRepository.count();
         mockMvc.perform(get(NEWS_API_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("page", String.valueOf(TEST_PAGE))
-                        .param("size", String.valueOf(TEST_PAGE_SIZE)))
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                        .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                        .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isNotEmpty())
                 .andExpect(jsonPath("$.data.content.size()").value(expectedNewsSize));
@@ -75,9 +82,10 @@ class NewsControllerTest extends BaseIntegrationTest {
         int expectedNewsSize = 1;
         mockMvc.perform(get(NEWS_API_PATH + "/criteria")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(searchCriteria))
-                        .param("page", String.valueOf(TEST_PAGE))
-                        .param("size", String.valueOf(TEST_PAGE_SIZE)))
+                        .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                        .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                        .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE))
+                        .content(objectMapper.writeValueAsString(searchCriteria)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isNotEmpty())
                 .andExpect(jsonPath("$.data.content.size()").value(expectedNewsSize));
@@ -90,7 +98,10 @@ class NewsControllerTest extends BaseIntegrationTest {
         @ValueSource(longs = {1L, 2L, 3L})
         void checkFindByIdShouldReturnNewsDtoResponse(Long id) throws Exception {
             mockMvc.perform(get(NEWS_API_PATH + "/{id}", id)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                            .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                            .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
                     .andExpect(jsonPath("$.data.id").value(id));
@@ -102,7 +113,10 @@ class NewsControllerTest extends BaseIntegrationTest {
             long doesntExistNewsId = new Random()
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(get(NEWS_API_PATH + "/{id}", doesntExistNewsId)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
+                            .param(PAGE_PARAM, String.valueOf(TEST_PAGE))
+                            .param(SIZE_PARAM, String.valueOf(TEST_PAGE_SIZE)))
                     .andExpect(status().isNotFound());
         }
     }
@@ -115,6 +129,7 @@ class NewsControllerTest extends BaseIntegrationTest {
         void checkUpdateShouldReturnNewsDtoResponse(Long id) throws Exception {
             mockMvc.perform(put(NEWS_API_PATH + "/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(newsDtoRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
@@ -127,6 +142,7 @@ class NewsControllerTest extends BaseIntegrationTest {
         void checkUpdatePartiallyShouldReturnNewsDtoResponse(Long id) throws Exception {
             mockMvc.perform(patch(NEWS_API_PATH + "/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(newsDtoRequest)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.data").isNotEmpty())
@@ -140,6 +156,7 @@ class NewsControllerTest extends BaseIntegrationTest {
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(put(NEWS_API_PATH + "/{id}", doesntExistNewsId)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(newsDtoRequest)))
                     .andExpect(status().isNotFound());
         }
@@ -151,6 +168,7 @@ class NewsControllerTest extends BaseIntegrationTest {
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(patch(NEWS_API_PATH + "/{id}", doesntExistNewsId)
                             .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER)
                             .content(objectMapper.writeValueAsString(newsDtoRequest)))
                     .andExpect(status().isNotFound());
         }
@@ -163,7 +181,8 @@ class NewsControllerTest extends BaseIntegrationTest {
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnNewsDtoResponse(Long id) throws Exception {
             mockMvc.perform(delete(NEWS_API_PATH + "/{id}", id)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isNoContent());
         }
 
@@ -173,7 +192,8 @@ class NewsControllerTest extends BaseIntegrationTest {
             long doesntExistNewsId = new Random()
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             mockMvc.perform(delete(NEWS_API_PATH + "/{id}", doesntExistNewsId)
-                            .contentType(MediaType.APPLICATION_JSON))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER, TEST_BEARER))
                     .andExpect(status().isNotFound());
         }
     }

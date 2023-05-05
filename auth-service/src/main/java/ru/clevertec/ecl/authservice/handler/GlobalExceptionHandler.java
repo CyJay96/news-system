@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.clevertec.ecl.authservice.exception.EntityNotFoundException;
 import ru.clevertec.ecl.authservice.exception.TokenExpirationException;
+import ru.clevertec.ecl.authservice.exception.TokenValidationException;
 import ru.clevertec.ecl.authservice.exception.UserExistenceException;
 import ru.clevertec.ecl.authservice.model.dto.response.APIResponse;
 
@@ -58,6 +59,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TokenExpirationException.class)
     public ResponseEntity<APIResponse<Void>> handleTokenExpirationException(
+            RuntimeException exception,
+            HttpServletRequest request
+    ) {
+        log.warn(exception.getMessage(), exception);
+
+        return generateErrorResponse(exception, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(TokenValidationException.class)
+    public ResponseEntity<APIResponse<Void>> handleTokenValidationException(
             RuntimeException exception,
             HttpServletRequest request
     ) {

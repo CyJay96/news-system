@@ -28,11 +28,11 @@ public class UserDtoRequest implements Serializable {
     private String username;
 
     @Length(max = 255, message = "User first name is too long")
-    @JsonProperty(value = "first_name")
+    @JsonProperty(value = "firstName")
     private String firstName;
 
     @Length(max = 255, message = "User last name is too long")
-    @JsonProperty(value = "last_name")
+    @JsonProperty(value = "lastName")
     private String lastName;
 
     @NotBlank(message = "Email cannot be empty")

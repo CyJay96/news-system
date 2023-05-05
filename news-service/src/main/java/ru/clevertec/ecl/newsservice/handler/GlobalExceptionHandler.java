@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     ) {
         log.warn(exception.getMessage(), exception);
 
-        return generateErrorResponse(exception, HttpStatus.NOT_FOUND, request);
+        return generateErrorResponse(exception, HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(Exception.class)

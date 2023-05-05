@@ -6,20 +6,6 @@ spring:
     activate:
       on-profile: docker
 
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    virtual-host: /
-    port: 15672
-    username: guest
-    password: guest
-
-mp:
-  rabbitmq:
-    queue: user.queue
-    delay:
-      routing-key: user.delayed.queue
-      exchange: user.delay.exchange
-
 app:
   user-feign-client:
     host: auth-service
@@ -34,20 +20,6 @@ spring:
     import:
       - "optional:configserver:http://localhost:8088"
       - "classpath:application-dev.yml"
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    virtual-host: /
-    port: 15672
-    username: guest
-    password: guest
-
-mp:
-  rabbitmq:
-    queue: user.queue
-    delay:
-      routing-key: user.delayed.queue
-      exchange: user.delay.exchange
 
 app:
   user-feign-client:

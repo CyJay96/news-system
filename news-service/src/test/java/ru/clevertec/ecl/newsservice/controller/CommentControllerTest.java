@@ -31,10 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_ID;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
@@ -65,11 +67,11 @@ class CommentControllerTest {
         @Test
         @DisplayName("Save Comment by News ID")
         void checkSaveByNewsIdShouldReturnCommentDtoResponse() {
-            doReturn(expectedCommentDtoResponse).when(commentService).save(TEST_ID, commentDtoRequest);
+            doReturn(expectedCommentDtoResponse).when(commentService).save(TEST_ID, commentDtoRequest, TEST_BEARER);
 
-            var actualComment = commentController.saveByNewsId(TEST_ID, commentDtoRequest);
+            var actualComment = commentController.saveByNewsId(TEST_BEARER, TEST_ID, commentDtoRequest);
 
-            verify(commentService).save(anyLong(), any());
+            verify(commentService).save(anyLong(), any(), anyString());
 
             assertAll(
                     () -> assertThat(actualComment.getStatusCode()).isEqualTo(HttpStatus.CREATED),
@@ -81,11 +83,11 @@ class CommentControllerTest {
         @Test
         @DisplayName("Save Comment by News ID with Argument Captor")
         void checkSaveByNewsIdWithArgumentCaptorShouldReturnCommentDtoResponse() {
-            doReturn(expectedCommentDtoResponse).when(commentService).save(TEST_ID, commentDtoRequest);
+            doReturn(expectedCommentDtoResponse).when(commentService).save(TEST_ID, commentDtoRequest, TEST_BEARER);
 
-            commentController.saveByNewsId(TEST_ID, commentDtoRequest);
+            commentController.saveByNewsId(TEST_BEARER, TEST_ID, commentDtoRequest);
 
-            verify(commentService).save(anyLong(), commentDtoRequestCaptor.capture());
+            verify(commentService).save(anyLong(), commentDtoRequestCaptor.capture(), anyString());
 
             assertThat(commentDtoRequestCaptor.getValue()).isEqualTo(commentDtoRequest);
         }
@@ -151,11 +153,11 @@ class CommentControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateShouldReturnCommentDtoResponse(Long id) {
-            doReturn(expectedCommentDtoResponse).when(commentService).update(id, commentDtoRequest);
+            doReturn(expectedCommentDtoResponse).when(commentService).update(id, commentDtoRequest, TEST_BEARER);
 
-            var actualComment = commentController.update(id, commentDtoRequest);
+            var actualComment = commentController.update(TEST_BEARER, id, commentDtoRequest);
 
-            verify(commentService).update(anyLong(), any());
+            verify(commentService).update(anyLong(), any(), anyString());
 
             assertAll(
                     () -> assertThat(actualComment.getStatusCode()).isEqualTo(HttpStatus.OK),
@@ -168,11 +170,11 @@ class CommentControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateWithArgumentCaptorShouldReturnCommentDtoResponse(Long id) {
-            doReturn(expectedCommentDtoResponse).when(commentService).update(id, commentDtoRequest);
+            doReturn(expectedCommentDtoResponse).when(commentService).update(id, commentDtoRequest, TEST_BEARER);
 
-            commentController.update(id, commentDtoRequest);
+            commentController.update(TEST_BEARER, id, commentDtoRequest);
 
-            verify(commentService).update(anyLong(), commentDtoRequestCaptor.capture());
+            verify(commentService).update(anyLong(), commentDtoRequestCaptor.capture(), anyString());
 
             assertThat(commentDtoRequestCaptor.getValue()).isEqualTo(commentDtoRequest);
         }
@@ -180,11 +182,13 @@ class CommentControllerTest {
         @Test
         @DisplayName("Update Comment by ID; not found")
         void checkUpdateShouldThrowCommentNotFoundException() {
-            doThrow(EntityNotFoundException.class).when(commentService).update(anyLong(), any());
+            doThrow(EntityNotFoundException.class).when(commentService).update(anyLong(), any(), anyString());
 
-            assertThrows(EntityNotFoundException.class, () -> commentController.update(TEST_ID, commentDtoRequest));
+            assertThrows(EntityNotFoundException.class,
+                    () -> commentController.update(TEST_BEARER, TEST_ID, commentDtoRequest)
+            );
 
-            verify(commentService).update(anyLong(), any());
+            verify(commentService).update(anyLong(), any(), anyString());
         }
     }
 
@@ -194,11 +198,11 @@ class CommentControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnVoid(Long id) {
-            doNothing().when(commentService).deleteById(id);
+            doNothing().when(commentService).deleteById(id, TEST_BEARER);
 
-            var voidResponse = commentController.deleteById(id);
+            var voidResponse = commentController.deleteById(TEST_BEARER, id);
 
-            verify(commentService).deleteById(anyLong());
+            verify(commentService).deleteById(anyLong(), anyString());
 
             assertThat(voidResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         }
@@ -206,11 +210,11 @@ class CommentControllerTest {
         @Test
         @DisplayName("Delete Comment by ID; not found")
         void checkDeleteByIdShouldThrowCommentNotFoundException() {
-            doThrow(EntityNotFoundException.class).when(commentService).deleteById(anyLong());
+            doThrow(EntityNotFoundException.class).when(commentService).deleteById(anyLong(), anyString());
 
-            assertThrows(EntityNotFoundException.class, () -> commentController.deleteById(TEST_ID));
+            assertThrows(EntityNotFoundException.class, () -> commentController.deleteById(TEST_BEARER, TEST_ID));
 
-            verify(commentService).deleteById(anyLong());
+            verify(commentService).deleteById(anyLong(), anyString());
         }
     }
 }

@@ -21,21 +21,23 @@ import static org.springframework.util.StreamUtils.copyToString;
 @UtilityClass
 public class WireMockRequestUtil {
 
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void initRequest() throws IOException {
-        stubFor(get(urlPathMatching("/api/v0/users/byUsername/.*"))
+        stubFor(get(urlPathMatching("/api/v0/users/byToken/.*"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withHeader(CONTENT_TYPE_HEADER, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(
                                 copyToString(
-                                        WireMockRequestUtil.class.getClassLoader().getResourceAsStream("json/response.json"),
+                                        WireMockRequestUtil.class.getClassLoader().getResourceAsStream("json/userResponse.json"),
                                         defaultCharset()))));
     }
 
     public ResponseEntity<APIResponse<UserDtoResponse>> buildUserDtoResponse() throws IOException {
-        UserDtoResponse userDtoResponse = mapper.readValue(Paths.get("src/test/resources/json/response.json").toFile(),
+        UserDtoResponse userDtoResponse = mapper.readValue(Paths.get("src/test/resources/json/userResponse.json").toFile(),
                 UserDtoResponse.class);
 
         return APIResponse.of(

@@ -56,10 +56,8 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: news_system_dev
-      RABBITMQ_HOST: rabbitmq
     depends_on:
       - eureka-server
-      - rabbitmq
     entrypoint: ["/app/wait-for-it.sh", "eureka-server:8761", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
     networks:
       - postgres-network
@@ -77,10 +75,8 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_DB: news_system_auth
-      RABBITMQ_HOST: rabbitmq
     depends_on:
       - eureka-server
-      - rabbitmq
     entrypoint: ["/app/wait-for-it.sh", "eureka-server:8761", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
     networks:
       - postgres-network
@@ -105,16 +101,6 @@ services:
     image: redis:6
     ports:
       - "6379:6379"
-    networks:
-      - postgres-network
-    restart: unless-stopped
-
-  rabbitmq:
-    image: rabbitmq:3.10.2-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     networks:
       - postgres-network
     restart: unless-stopped

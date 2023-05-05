@@ -8,7 +8,7 @@ import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
 
 public interface NewsService {
 
-    NewsDtoResponse save(NewsDtoRequest newsDtoRequest);
+    NewsDtoResponse save(NewsDtoRequest newsDtoRequest, String token);
 
     PageResponse<NewsDtoResponse> findAll(Pageable pageable);
 
@@ -16,7 +16,7 @@ public interface NewsService {
 
     NewsDtoResponse findById(Long id, Pageable pageable);
 
-    NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest);
+    NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest, String token);
 
-    void deleteById(Long id);
+    void deleteById(Long id, String token);
 }

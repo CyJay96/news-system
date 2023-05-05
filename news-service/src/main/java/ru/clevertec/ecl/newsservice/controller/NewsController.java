@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.aop.annotation.Log;
@@ -50,6 +51,7 @@ import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PA
 public class NewsController {
 
     public static final String NEWS_API_PATH = "/api/v0/news";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final NewsService newsService;
 
@@ -63,8 +65,10 @@ public class NewsController {
             @ApiResponse(responseCode = "201", description = "Saved News")
     })
     @PostMapping
-    public ResponseEntity<APIResponse<NewsDtoResponse>> save(@RequestBody @Valid NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.save(newsDtoRequest);
+    public ResponseEntity<APIResponse<NewsDtoResponse>> save(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
+            @RequestBody @Valid NewsDtoRequest newsDtoRequest) {
+        NewsDtoResponse news = newsService.save(newsDtoRequest, token);
 
         return APIResponse.of(
                 "News with ID " + news.getId() + " were created",
@@ -165,9 +169,10 @@ public class NewsController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<NewsDtoResponse>> update(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.update(id, newsDtoRequest);
+        NewsDtoResponse news = newsService.update(id, newsDtoRequest, token);
 
         return APIResponse.of(
                 "Changes were applied to the News with ID " + id,
@@ -191,9 +196,10 @@ public class NewsController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<NewsDtoResponse>> updatePartially(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.update(id, newsDtoRequest);
+        NewsDtoResponse news = newsService.update(id, newsDtoRequest, token);
 
         return APIResponse.of(
                 "Partial changes were applied to the News with ID " + id,
@@ -215,8 +221,10 @@ public class NewsController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
-        newsService.deleteById(id);
+    public ResponseEntity<APIResponse<Void>> deleteById(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
+            @PathVariable @NotNull @PositiveOrZero Long id) {
+        newsService.deleteById(id, token);
 
         return APIResponse.of(
                 "News with ID " + id + " were deleted",

@@ -8,13 +8,13 @@ import ru.clevertec.ecl.authservice.model.entity.User;
 
 public interface UserService {
 
-    PageResponse<UserDtoResponse> getAll(Pageable pageable);
+    PageResponse<UserDtoResponse> findAll(Pageable pageable);
 
-    UserDtoResponse getById(Long id);
+    UserDtoResponse findById(Long id);
 
-    UserDtoResponse getByUsername(String username);
+    UserDtoResponse findByUsername(String username);
 
-    User getEntityByUsername(String username);
+    User findEntityByUsername(String username);
 
     UserDtoResponse update(Long id, UserDtoRequest userDtoRequest);
 

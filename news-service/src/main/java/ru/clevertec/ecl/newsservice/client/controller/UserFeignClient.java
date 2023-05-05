@@ -10,6 +10,6 @@ import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
 @FeignClient(value = "${app.user-feign-client.host}")
 public interface UserFeignClient {
 
-    @GetMapping("/api/v0/users/byUsername/{username}")
-    ResponseEntity<APIResponse<UserDtoResponse>> findUserByUsername(@PathVariable String username);
+    @GetMapping("/api/v0/users/byToken/{token}")
+    ResponseEntity<APIResponse<UserDtoResponse>> findByToken(@PathVariable String token);
 }

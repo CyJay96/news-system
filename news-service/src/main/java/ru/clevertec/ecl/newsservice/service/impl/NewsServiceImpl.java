@@ -37,8 +37,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @CacheEvict(value = "news", allEntries = true)
-    public NewsDtoResponse save(NewsDtoRequest newsDtoRequest) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+    public NewsDtoResponse save(NewsDtoRequest newsDtoRequest, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token)) {
             throw new NoPermissionsException();
         }
 
@@ -106,8 +106,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @CacheEvict(value = "news", allEntries = true)
-    public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+    public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token)) {
             throw new NoPermissionsException();
         }
 
@@ -119,8 +119,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @CacheEvict(value = "news", allEntries = true)
-    public void deleteById(Long id) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist()) {
+    public void deleteById(Long id, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token)) {
             throw new NoPermissionsException();
         }
 

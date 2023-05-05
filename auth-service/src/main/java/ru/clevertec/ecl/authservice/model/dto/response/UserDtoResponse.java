@@ -21,10 +21,10 @@ public class UserDtoResponse implements Serializable {
     @JsonProperty(value = "username")
     private String username;
 
-    @JsonProperty(value = "first_name")
+    @JsonProperty(value = "firstName")
     private String firstName;
 
-    @JsonProperty(value = "last_name")
+    @JsonProperty(value = "lastName")
     private String lastName;
 
     @JsonProperty(value = "email")

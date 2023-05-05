@@ -18,10 +18,6 @@ ext {
 }
 
 dependencies {
-    // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-actuator'
-
-    // Spring Cloud
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
 }

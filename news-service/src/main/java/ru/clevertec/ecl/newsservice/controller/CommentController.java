@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.aop.annotation.Log;
@@ -52,6 +53,7 @@ public class CommentController {
     private final CommentService commentService;
 
     public static final String COMMENT_API_PATH = "/api/v0/comments";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
      * POST /api/v0/comments : Create a new Comment
@@ -65,9 +67,10 @@ public class CommentController {
     })
     @PostMapping("/{newsId}")
     public ResponseEntity<APIResponse<CommentDtoResponse>> saveByNewsId(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long newsId,
             @RequestBody @Valid CommentDtoRequest commentDtoRequest) {
-        CommentDtoResponse comment = commentService.save(newsId, commentDtoRequest);
+        CommentDtoResponse comment = commentService.save(newsId, commentDtoRequest, token);
 
         return APIResponse.of(
                 "Comment with ID " + comment.getId() + " was created",
@@ -164,9 +167,10 @@ public class CommentController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<CommentDtoResponse>> update(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid CommentDtoRequest commentDtoRequest) {
-        CommentDtoResponse comment = commentService.update(id, commentDtoRequest);
+        CommentDtoResponse comment = commentService.update(id, commentDtoRequest, token);
 
         return APIResponse.of(
                 "Changes were applied to the Comment with ID " + id,
@@ -190,9 +194,10 @@ public class CommentController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<CommentDtoResponse>> updatePartially(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody CommentDtoRequest commentDtoRequest) {
-        CommentDtoResponse comment = commentService.update(id, commentDtoRequest);
+        CommentDtoResponse comment = commentService.update(id, commentDtoRequest, token);
 
         return APIResponse.of(
                 "Partial changes were applied to the Comment with ID " + id,
@@ -214,8 +219,10 @@ public class CommentController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
-        commentService.deleteById(id);
+    public ResponseEntity<APIResponse<Void>> deleteById(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
+            @PathVariable @NotNull @PositiveOrZero Long id) {
+        commentService.deleteById(id, token);
 
         return APIResponse.of(
                 "Comment with ID " + id + " was deleted",

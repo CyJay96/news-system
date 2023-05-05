@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.authservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.authservice.exception.TokenExpirationException;
+import ru.clevertec.ecl.authservice.exception.TokenValidationException;
 import ru.clevertec.ecl.authservice.model.dto.request.UserDtoRequest;
 import ru.clevertec.ecl.authservice.model.dto.response.APIResponse;
 import ru.clevertec.ecl.authservice.model.dto.response.PageResponse;
 import ru.clevertec.ecl.authservice.model.dto.response.UserDtoResponse;
 import ru.clevertec.ecl.authservice.service.UserService;
+import ru.clevertec.ecl.authservice.service.UserTokenService;
 
 import static ru.clevertec.ecl.authservice.controller.UserController.USER_API_PATH;
 
@@ -46,6 +50,7 @@ public class UserController {
     public static final String USER_API_PATH = "/api/v0/users";
 
     private final UserService userService;
+    private final UserTokenService userTokenService;
 
     /**
      * GET /api/v0/users : Find Users info
@@ -58,7 +63,7 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<APIResponse<PageResponse<UserDtoResponse>>> findAll(Pageable pageable) {
-        PageResponse<UserDtoResponse> users = userService.getAll(pageable);
+        PageResponse<UserDtoResponse> users = userService.findAll(pageable);
 
         return APIResponse.of(
                 "All Users: page_number: " + pageable.getPageNumber() +
@@ -82,7 +87,7 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
-        UserDtoResponse user = userService.getById(id);
+        UserDtoResponse user = userService.findById(id);
 
         return APIResponse.of(
                 "User with ID " + user.getId() + " was found",
@@ -104,12 +109,39 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @GetMapping("/byUsername/{username}")
-    public ResponseEntity<APIResponse<UserDtoResponse>> findById(@PathVariable @NotNull String username) {
-        UserDtoResponse user = userService.getByUsername(username);
+    public ResponseEntity<APIResponse<UserDtoResponse>> findByUsername(@PathVariable @NotBlank String username) {
+        UserDtoResponse user = userService.findByUsername(username);
 
         return APIResponse.of(
                 "User with username " + user.getUsername() + " was found",
-                USER_API_PATH + "/" + username,
+                USER_API_PATH + "/byUsername/" + username,
+                HttpStatus.OK,
+                user
+        );
+    }
+
+    /**
+     * GET /api/v0/users/byToken/{token} : Find User info
+     *
+     * @param token JWT token to return (required)
+     * @throws TokenExpirationException if the User token was expired
+     * @throws TokenValidationException if the User token is not valid
+     * @throws EntityNotFoundException if the User with username doesn't exist
+     */
+    @Operation(summary = "Find User by token", tags = "UserController")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found User by Username"),
+            @ApiResponse(responseCode = "401", description = "Token was expired", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "Token is not valid", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
+    })
+    @GetMapping("/byToken/{token}")
+    public ResponseEntity<APIResponse<UserDtoResponse>> findByToken(@PathVariable @NotBlank String token) {
+        UserDtoResponse user = userTokenService.findUserByToken(token);
+
+        return APIResponse.of(
+                "User with username " + user.getUsername() + " was found",
+                USER_API_PATH + "/byToken",
                 HttpStatus.OK,
                 user
         );

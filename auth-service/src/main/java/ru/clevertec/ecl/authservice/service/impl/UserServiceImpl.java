@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public PageResponse<UserDtoResponse> getAll(Pageable pageable) {
+    public PageResponse<UserDtoResponse> findAll(Pageable pageable) {
         Page<User> userPage = userRepository.findAll(pageable);
 
         List<UserDtoResponse> userDtoResponses = userPage.stream()
@@ -40,19 +40,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse getById(Long id) {
+    public UserDtoResponse findById(Long id) {
         return userRepository.findById(id)
                 .map(userMapper::toUserDtoResponse)
                 .orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
 
     @Override
-    public UserDtoResponse getByUsername(String username) {
-        return userMapper.toUserDtoResponse(getEntityByUsername(username));
+    public UserDtoResponse findByUsername(String username) {
+        return userMapper.toUserDtoResponse(findEntityByUsername(username));
     }
 
     @Override
-    public User getEntityByUsername(String username) {
+    public User findEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(User.class.getSimpleName()));
     }

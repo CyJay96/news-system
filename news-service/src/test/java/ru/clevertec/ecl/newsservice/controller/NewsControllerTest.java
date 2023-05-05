@@ -33,10 +33,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_ID;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
@@ -68,11 +70,11 @@ public class NewsControllerTest {
         @Test
         @DisplayName("Save News")
         void checkSaveShouldReturnNewsDtoResponse() {
-            doReturn(expectedNewsDtoResponse).when(newsService).save(newsDtoRequest);
+            doReturn(expectedNewsDtoResponse).when(newsService).save(newsDtoRequest, TEST_BEARER);
 
-            var actualNews = newsController.save(newsDtoRequest);
+            var actualNews = newsController.save(TEST_BEARER, newsDtoRequest);
 
-            verify(newsService).save(any());
+            verify(newsService).save(any(), anyString());
 
             assertAll(
                     () -> assertThat(actualNews.getStatusCode()).isEqualTo(HttpStatus.CREATED),
@@ -84,11 +86,11 @@ public class NewsControllerTest {
         @Test
         @DisplayName("Save News with Argument Captor")
         void checkSaveWithArgumentCaptorShouldReturnNewsDtoResponse() {
-            doReturn(expectedNewsDtoResponse).when(newsService).save(newsDtoRequest);
+            doReturn(expectedNewsDtoResponse).when(newsService).save(newsDtoRequest, TEST_BEARER);
 
-            newsController.save(newsDtoRequest);
+            newsController.save(TEST_BEARER, newsDtoRequest);
 
-            verify(newsService).save(newsDtoRequestCaptor.capture());
+            verify(newsService).save(newsDtoRequestCaptor.capture(), anyString());
 
             assertThat(newsDtoRequestCaptor.getValue()).isEqualTo(newsDtoRequest);
         }
@@ -178,11 +180,11 @@ public class NewsControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateShouldReturnNewsDtoResponse(Long id) {
-            doReturn(expectedNewsDtoResponse).when(newsService).update(id, newsDtoRequest);
+            doReturn(expectedNewsDtoResponse).when(newsService).update(id, newsDtoRequest, TEST_BEARER);
 
-            var actualNews = newsController.update(id, newsDtoRequest);
+            var actualNews = newsController.update(TEST_BEARER, id, newsDtoRequest);
 
-            verify(newsService).update(anyLong(), any());
+            verify(newsService).update(anyLong(), any(), anyString());
 
             assertAll(
                     () -> assertThat(actualNews.getStatusCode()).isEqualTo(HttpStatus.OK),
@@ -195,11 +197,11 @@ public class NewsControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateWithArgumentCaptorShouldReturnNewsDtoResponse(Long id) {
-            doReturn(expectedNewsDtoResponse).when(newsService).update(id, newsDtoRequest);
+            doReturn(expectedNewsDtoResponse).when(newsService).update(id, newsDtoRequest, TEST_BEARER);
 
-            newsController.update(id, newsDtoRequest);
+            newsController.update(TEST_BEARER, id, newsDtoRequest);
 
-            verify(newsService).update(anyLong(), newsDtoRequestCaptor.capture());
+            verify(newsService).update(anyLong(), newsDtoRequestCaptor.capture(), anyString());
 
             assertThat(newsDtoRequestCaptor.getValue()).isEqualTo(newsDtoRequest);
         }
@@ -207,11 +209,13 @@ public class NewsControllerTest {
         @Test
         @DisplayName("Update News by ID; not found")
         void checkUpdateShouldThrowNewsNotFoundException() {
-            doThrow(EntityNotFoundException.class).when(newsService).update(anyLong(), any());
+            doThrow(EntityNotFoundException.class).when(newsService).update(anyLong(), any(), anyString());
 
-            assertThrows(EntityNotFoundException.class, () -> newsController.update(TEST_ID, newsDtoRequest));
+            assertThrows(EntityNotFoundException.class,
+                    () -> newsController.update(TEST_BEARER, TEST_ID, newsDtoRequest)
+            );
 
-            verify(newsService).update(anyLong(), any());
+            verify(newsService).update(anyLong(), any(), anyString());
         }
     }
 
@@ -221,11 +225,11 @@ public class NewsControllerTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnVoid(Long id) {
-            doNothing().when(newsService).deleteById(id);
+            doNothing().when(newsService).deleteById(id, TEST_BEARER);
 
-            var voidResponse = newsController.deleteById(id);
+            var voidResponse = newsController.deleteById(TEST_BEARER, id);
 
-            verify(newsService).deleteById(anyLong());
+            verify(newsService).deleteById(anyLong(), anyString());
 
             assertThat(voidResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         }
@@ -233,11 +237,11 @@ public class NewsControllerTest {
         @Test
         @DisplayName("Delete News by ID; not found")
         void checkDeleteByIdShouldThrowNewsNotFoundException() {
-            doThrow(EntityNotFoundException.class).when(newsService).deleteById(anyLong());
+            doThrow(EntityNotFoundException.class).when(newsService).deleteById(anyLong(), anyString());
 
-            assertThrows(EntityNotFoundException.class, () -> newsController.deleteById(TEST_ID));
+            assertThrows(EntityNotFoundException.class, () -> newsController.deleteById(TEST_BEARER, TEST_ID));
 
-            verify(newsService).deleteById(anyLong());
+            verify(newsService).deleteById(anyLong(), anyString());
         }
     }
 }

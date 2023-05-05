@@ -17,10 +17,6 @@ ext {
 }
 
 dependencies {
-    // Spring Boot
-    implementation 'org.springframework.boot:spring-boot-actuator'
-
-    // Spring Cloud
     implementation 'org.springframework.cloud:spring-cloud-config-server'
 }
 

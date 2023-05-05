@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.authservice.exception.EntityNotFoundException;
 import ru.clevertec.ecl.authservice.exception.UserExistenceException;
-import ru.clevertec.ecl.authservice.messaging.RabbitMqSender;
 import ru.clevertec.ecl.authservice.model.dto.request.LoginRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.request.RegisterRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.response.AuthDtoResponse;
@@ -38,7 +37,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final RabbitMqSender rabbitMqSender;
 
     @Override
     public AuthDtoResponse register(final RegisterRequestDto registerRequestDto) {
@@ -73,11 +71,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, loginRequestDto.getPassword()));
 
-            final User user = userService.getEntityByUsername(username);
+            final User user = userService.findEntityByUsername(username);
 
             final String token = jwtTokenProvider.createToken(user);
-
-            rabbitMqSender.send(user.getUsername());
 
             return AuthDtoResponse.builder()
                     .token(token)

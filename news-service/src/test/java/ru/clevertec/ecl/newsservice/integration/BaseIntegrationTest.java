@@ -34,7 +34,7 @@ public abstract class BaseIntegrationTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         WireMockUtil.resetStubs();
         try {
             WireMockRequestUtil.initRequest();
@@ -44,7 +44,7 @@ public abstract class BaseIntegrationTest {
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         WireMockUtil.stopServer();
     }
 

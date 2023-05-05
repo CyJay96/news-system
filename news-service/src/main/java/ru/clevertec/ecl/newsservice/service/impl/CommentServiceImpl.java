@@ -34,8 +34,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @CacheEvict(value = "comments", allEntries = true)
-    public CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+    public CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token) && !userHelper.isSubscriber(token)) {
             throw new NoPermissionsException();
         }
 
@@ -95,8 +95,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @CacheEvict(value = "comments", allEntries = true)
-    public CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+    public CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token) && !userHelper.isSubscriber(token)) {
             throw new NoPermissionsException();
         }
 
@@ -108,8 +108,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @CacheEvict(value = "comments", allEntries = true)
-    public void deleteById(Long id) {
-        if (!userHelper.isAdmin() && !userHelper.isJournalist() && !userHelper.isSubscriber()) {
+    public void deleteById(Long id, String token) {
+        if (!userHelper.isAdmin(token) && !userHelper.isJournalist(token) && !userHelper.isSubscriber(token)) {
             throw new NoPermissionsException();
         }
 

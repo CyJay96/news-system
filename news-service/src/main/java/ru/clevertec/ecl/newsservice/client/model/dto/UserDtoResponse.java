@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.newsservice.client.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import ru.clevertec.ecl.newsservice.client.model.enums.Status;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
+@Schema(description = "User DTO Response")
 public class UserDtoResponse implements Serializable {
 
     private Long id;

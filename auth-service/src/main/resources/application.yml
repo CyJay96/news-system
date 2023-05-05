@@ -19,25 +19,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     enabled: true
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    virtual-host: /
-    port: 15672
-    username: guest
-    password: guest
-
-mp:
-  rabbitmq:
-    queue: user.queue
-    delay:
-      routing-key: user.delayed.queue
-      exchange: user.delay.exchange
 
 jwt:
   token:
     secret: newssystemauth
-    expired: 3600000
+    expired:
+
 ---
+
 spring:
   application:
     name: auth-service
@@ -59,19 +48,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     enabled: true
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    virtual-host: /
-    port: 15672
-    username: guest
-    password: guest
-
-mp:
-  rabbitmq:
-    queue: user.queue
-    delay:
-      routing-key: user.delayed.queue
-      exchange: user.delay.exchange
 
 jwt:
   token:
