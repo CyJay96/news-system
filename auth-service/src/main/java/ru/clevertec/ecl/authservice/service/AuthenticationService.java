@@ -1,12 +1,12 @@
 package ru.clevertec.ecl.authservice.service;
 
-import ru.clevertec.ecl.authservice.model.dto.request.SignInRequestDto;
-import ru.clevertec.ecl.authservice.model.dto.request.SignUpRequestDto;
+import ru.clevertec.ecl.authservice.model.dto.request.LoginRequestDto;
+import ru.clevertec.ecl.authservice.model.dto.request.RegisterRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.response.AuthDtoResponse;
 
 public interface AuthenticationService {
 
-    AuthDtoResponse signUp(final SignUpRequestDto requestDto);
+    AuthDtoResponse register(final RegisterRequestDto registerRequestDto);
 
-    AuthDtoResponse signIn(final SignInRequestDto requestDto);
+    AuthDtoResponse login(final LoginRequestDto loginRequestDto);
 }

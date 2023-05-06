@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 
 public class TestConstants {
 
+    public static final String TEST_BEARER = "Bearer test_token";
+
     public static final Integer TEST_PAGE = 0;
     public static final Integer TEST_PAGE_SIZE = 100;
 

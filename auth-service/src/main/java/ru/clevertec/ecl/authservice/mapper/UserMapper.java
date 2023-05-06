@@ -11,6 +11,11 @@ import ru.clevertec.ecl.authservice.model.dto.request.UserDtoRequest;
 import ru.clevertec.ecl.authservice.model.dto.response.UserDtoResponse;
 import ru.clevertec.ecl.authservice.model.entity.User;
 
+/**
+ * Mapper for User entities & DTOs
+ *
+ * @author Konstantin Voytko
+ */
 @Mapper(
         uses = RoleMapper.class,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR

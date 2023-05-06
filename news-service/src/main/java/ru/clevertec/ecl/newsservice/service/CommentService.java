@@ -8,7 +8,7 @@ import ru.clevertec.ecl.newsservice.model.dto.response.PageResponse;
 
 public interface CommentService {
 
-    CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest);
+    CommentDtoResponse save(Long newsId, CommentDtoRequest commentDtoRequest, String token);
 
     PageResponse<CommentDtoResponse> findAll(Pageable pageable);
 
@@ -16,7 +16,7 @@ public interface CommentService {
 
     CommentDtoResponse findById(Long id);
 
-    CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest);
+    CommentDtoResponse update(Long id, CommentDtoRequest commentDtoRequest, String token);
 
-    void deleteById(Long id);
+    void deleteById(Long id, String token);
 }

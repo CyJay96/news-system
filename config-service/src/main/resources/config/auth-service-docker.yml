@@ -1,0 +1,10 @@
+server:
+  port: 8082
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+
+springdoc:
+  packagesToScan: ru.clevertec.ecl.authservice

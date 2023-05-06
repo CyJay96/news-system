@@ -5,9 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Comment search criteria DTO
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
-@Schema(description = "Comment Criteria DTO")
+@Schema(description = "Comment search criteria DTO")
 public class CommentCriteria {
 
     @JsonProperty("text")

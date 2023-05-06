@@ -27,6 +27,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The User entity to store in the database
+ *
+ * @author Konstantin Voytko
+ */
 @Entity
 @Table(name = "users")
 @Builder
@@ -36,7 +41,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class User {
+public class User implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

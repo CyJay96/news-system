@@ -7,6 +7,11 @@ import lombok.Value;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Page response DTO
+ *
+ * @author Konstantin Voytko
+ */
 @Value
 @Builder
 public class PageResponse<T> implements Serializable {

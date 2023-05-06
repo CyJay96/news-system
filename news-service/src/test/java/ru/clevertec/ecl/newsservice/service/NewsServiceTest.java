@@ -20,6 +20,7 @@ import ru.clevertec.ecl.newsservice.builder.news.NewsDtoRequestTestBuilder;
 import ru.clevertec.ecl.newsservice.builder.news.NewsDtoResponseTestBuilder;
 import ru.clevertec.ecl.newsservice.builder.news.NewsTestBuilder;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.mapper.CommentMapper;
 import ru.clevertec.ecl.newsservice.mapper.NewsMapper;
 import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
@@ -32,6 +33,7 @@ import ru.clevertec.ecl.newsservice.model.entity.News;
 import ru.clevertec.ecl.newsservice.repository.CommentRepository;
 import ru.clevertec.ecl.newsservice.repository.NewsRepository;
 import ru.clevertec.ecl.newsservice.service.impl.NewsServiceImpl;
+import ru.clevertec.ecl.newsservice.service.impl.UserHelper;
 import ru.clevertec.ecl.newsservice.service.searcher.NewsSearcher;
 
 import java.util.List;
@@ -41,11 +43,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_ID;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
@@ -70,6 +74,9 @@ class NewsServiceTest {
     @Mock
     private CommentMapper commentMapper;
 
+    @Mock
+    private UserHelper userHelper;
+
     @Captor
     ArgumentCaptor<News> newsCaptor;
 
@@ -83,7 +90,8 @@ class NewsServiceTest {
 
     @BeforeEach
     void setUp() {
-        newsService = new NewsServiceImpl(newsSearcher, newsRepository, commentRepository, newsMapper, commentMapper);
+        newsService = new NewsServiceImpl(newsSearcher, newsRepository, commentRepository,
+                newsMapper, commentMapper, userHelper);
     }
 
     @Nested
@@ -91,11 +99,15 @@ class NewsServiceTest {
         @Test
         @DisplayName("Save News")
         void checkSaveShouldReturnNewsDtoResponse() {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
+
             doReturn(expectedNews).when(newsMapper).toNews(newsDtoRequest);
             doReturn(expectedNews).when(newsRepository).save(expectedNews);
             doReturn(expectedNewsDtoResponse).when(newsMapper).toNewsDtoResponse(expectedNews);
 
-            NewsDtoResponse actualNews = newsService.save(newsDtoRequest);
+            NewsDtoResponse actualNews = newsService.save(newsDtoRequest, TEST_BEARER);
+
+            verify(userHelper).isAdmin(anyString());
 
             verify(newsMapper).toNews(any());
             verify(newsRepository).save(any());
@@ -107,17 +119,33 @@ class NewsServiceTest {
         @Test
         @DisplayName("Save News with Argument Captor")
         void checkSaveWithArgumentCaptorShouldReturnNewsDtoResponse() {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
+
             doReturn(expectedNews).when(newsMapper).toNews(newsDtoRequest);
             doReturn(expectedNews).when(newsRepository).save(expectedNews);
             doReturn(expectedNewsDtoResponse).when(newsMapper).toNewsDtoResponse(expectedNews);
 
-            newsService.save(newsDtoRequest);
+            newsService.save(newsDtoRequest, TEST_BEARER);
+
+            verify(userHelper).isAdmin(anyString());
 
             verify(newsMapper).toNews(any());
             verify(newsRepository).save(newsCaptor.capture());
             verify(newsMapper).toNewsDtoResponse(any());
 
             assertThat(newsCaptor.getValue()).isEqualTo(expectedNews);
+        }
+
+        @Test
+        @DisplayName("Check permissions when save news")
+        void checkSaveShouldThrowNoPermissionsException() {
+            doReturn(false).when(userHelper).isAdmin(TEST_BEARER);
+            doReturn(false).when(userHelper).isJournalist(TEST_BEARER);
+
+            assertThrows(NoPermissionsException.class, () -> newsService.save(newsDtoRequest, TEST_BEARER));
+
+            verify(userHelper).isAdmin(anyString());
+            verify(userHelper).isJournalist(anyString());
         }
     }
 
@@ -191,12 +219,16 @@ class NewsServiceTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateShouldReturnNewsDtoResponse(Long id) {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
+
             doReturn(Optional.of(expectedNews)).when(newsRepository).findById(id);
             doNothing().when(newsMapper).updateNews(newsDtoRequest, expectedNews);
             doReturn(expectedNews).when(newsRepository).save(expectedNews);
             doReturn(expectedNewsDtoResponse).when(newsMapper).toNewsDtoResponse(expectedNews);
 
-            NewsDtoResponse actualNews = newsService.update(id, newsDtoRequest);
+            NewsDtoResponse actualNews = newsService.update(id, newsDtoRequest, TEST_BEARER);
+
+            verify(userHelper).isAdmin(anyString());
 
             verify(newsRepository).findById(anyLong());
             verify(newsMapper).updateNews(any(), any());
@@ -210,12 +242,16 @@ class NewsServiceTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateWithArgumentCaptorShouldReturnNewsDtoResponse(Long id) {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
+
             doReturn(Optional.of(expectedNews)).when(newsRepository).findById(id);
             doNothing().when(newsMapper).updateNews(newsDtoRequest, expectedNews);
             doReturn(expectedNews).when(newsRepository).save(expectedNews);
             doReturn(expectedNewsDtoResponse).when(newsMapper).toNewsDtoResponse(expectedNews);
 
-            newsService.update(id, newsDtoRequest);
+            newsService.update(id, newsDtoRequest, TEST_BEARER);
+
+            verify(userHelper).isAdmin(anyString());
 
             verify(newsRepository).findById(anyLong());
             verify(newsMapper).updateNews(any(), any());
@@ -226,12 +262,26 @@ class NewsServiceTest {
         }
 
         @Test
+        @DisplayName("Check permissions when update news")
+        void checkUpdateShouldThrowNoPermissionsException() {
+            doReturn(false).when(userHelper).isAdmin(TEST_BEARER);
+            doReturn(false).when(userHelper).isJournalist(TEST_BEARER);
+
+            assertThrows(NoPermissionsException.class, () -> newsService.update(TEST_ID, newsDtoRequest, TEST_BEARER));
+
+            verify(userHelper).isAdmin(anyString());
+            verify(userHelper).isJournalist(anyString());
+        }
+
+        @Test
         @DisplayName("Update News by ID; not found")
         void checkUpdateShouldThrowNewsNotFoundException() {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
             doThrow(EntityNotFoundException.class).when(newsRepository).findById(anyLong());
 
-            assertThrows(EntityNotFoundException.class, () -> newsService.update(TEST_ID, newsDtoRequest));
+            assertThrows(EntityNotFoundException.class, () -> newsService.update(TEST_ID, newsDtoRequest, TEST_BEARER));
 
+            verify(userHelper).isAdmin(anyString());
             verify(newsRepository).findById(anyLong());
         }
     }
@@ -242,22 +292,40 @@ class NewsServiceTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnNewsDtoResponse(Long id) {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
+
             doReturn(true).when(newsRepository).existsById(id);
             doNothing().when(newsRepository).deleteById(id);
 
-            newsService.deleteById(id);
+            newsService.deleteById(id, TEST_BEARER);
+
+            verify(userHelper).isAdmin(anyString());
 
             verify(newsRepository).existsById(anyLong());
             verify(newsRepository).deleteById(anyLong());
         }
 
         @Test
+        @DisplayName("Check permissions when delete news by ID")
+        void checkDeleteByIdShouldThrowNoPermissionsException() {
+            doReturn(false).when(userHelper).isAdmin(TEST_BEARER);
+            doReturn(false).when(userHelper).isJournalist(TEST_BEARER);
+
+            assertThrows(NoPermissionsException.class, () -> newsService.deleteById(TEST_ID, TEST_BEARER));
+
+            verify(userHelper).isAdmin(anyString());
+            verify(userHelper).isJournalist(anyString());
+        }
+
+        @Test
         @DisplayName("Delete News by ID; not found")
         void checkDeleteByIdShouldThrowNewsNotFoundException() {
+            doReturn(true).when(userHelper).isAdmin(TEST_BEARER);
             doReturn(false).when(newsRepository).existsById(anyLong());
 
-            assertThrows(EntityNotFoundException.class, () -> newsService.deleteById(TEST_ID));
+            assertThrows(EntityNotFoundException.class, () -> newsService.deleteById(TEST_ID, TEST_BEARER));
 
+            verify(userHelper).isAdmin(anyString());
             verify(newsRepository).existsById(anyLong());
         }
     }

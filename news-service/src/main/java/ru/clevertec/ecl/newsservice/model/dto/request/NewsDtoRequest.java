@@ -8,6 +8,11 @@ import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
+/**
+ * News DTO for requests
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "News DTO Request")

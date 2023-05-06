@@ -24,6 +24,7 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
 
@@ -43,7 +44,7 @@ class NewsServiceTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Save News")
     void checkSaveShouldReturnNewsDtoResponse() {
-        NewsDtoResponse actualNews = newsService.save(newsDtoRequest);
+        NewsDtoResponse actualNews = newsService.save(newsDtoRequest, TEST_BEARER);
         assertThat(actualNews.getTitle()).isEqualTo(newsDtoRequest.getTitle());
     }
 
@@ -88,7 +89,7 @@ class NewsServiceTest extends BaseIntegrationTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateShouldReturnNewsDtoResponse(Long id) {
-            NewsDtoResponse actualNews = newsService.update(id, newsDtoRequest);
+            NewsDtoResponse actualNews = newsService.update(id, newsDtoRequest, TEST_BEARER);
             assertThat(actualNews.getId()).isEqualTo(id);
         }
 
@@ -97,7 +98,9 @@ class NewsServiceTest extends BaseIntegrationTest {
         void checkUpdateShouldThrowNewsNotFoundException() {
             Long doesntExistNewsId = new Random()
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
-            assertThrows(EntityNotFoundException.class, () -> newsService.update(doesntExistNewsId, newsDtoRequest));
+            assertThrows(EntityNotFoundException.class,
+                    () -> newsService.update(doesntExistNewsId, newsDtoRequest, TEST_BEARER)
+            );
         }
     }
 
@@ -107,7 +110,7 @@ class NewsServiceTest extends BaseIntegrationTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnVoid(Long id) {
-            newsService.deleteById(id);
+            newsService.deleteById(id, TEST_BEARER);
             entityManager.flush();
         }
 
@@ -117,7 +120,7 @@ class NewsServiceTest extends BaseIntegrationTest {
             Long doesntExistNewsId = new Random()
                     .nextLong(newsRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             assertThrows(EntityNotFoundException.class, () -> {
-                newsService.deleteById(doesntExistNewsId);
+                newsService.deleteById(doesntExistNewsId, TEST_BEARER);
                 entityManager.flush();
             });
         }

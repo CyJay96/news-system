@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.aop.annotation.Log;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.model.criteria.NewsCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
@@ -49,22 +51,29 @@ import static ru.clevertec.ecl.newsservice.controller.NewsController.NEWS_API_PA
 @Tag(name = "NewsController", description = "News API")
 public class NewsController {
 
-    public static final String NEWS_API_PATH = "/v0/news";
+    public static final String NEWS_API_PATH = "/api/v0/news";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final NewsService newsService;
 
     /**
-     * POST /api/v0/news : Create a new News
+     * POST /api/v0/news : Save a new News entity
      *
-     * @param newsDtoRequest News object to create (required)
+     * @param token user JWT to verify user authorization
+     * @param newsDtoRequest News DTO to save (required)
+     * @throws NoPermissionsException if there are no permissions to save the News entity
+     * @return saved News DTO
      */
     @Operation(summary = "Save News", tags = "NewsController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved News")
+            @ApiResponse(responseCode = "201", description = "Saved News"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping
-    public ResponseEntity<APIResponse<NewsDtoResponse>> save(@RequestBody @Valid NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.save(newsDtoRequest);
+    public ResponseEntity<APIResponse<NewsDtoResponse>> save(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
+            @RequestBody @Valid NewsDtoRequest newsDtoRequest) {
+        NewsDtoResponse news = newsService.save(newsDtoRequest, token);
 
         return APIResponse.of(
                 "News with ID " + news.getId() + " were created",
@@ -75,9 +84,10 @@ public class NewsController {
     }
 
     /**
-     * GET /api/v0/news : Find News info
+     * GET /api/v0/news : Find all News entities info
      *
-     * @param pageable page number & page size values to return (not required)
+     * @param pageable page number & page size values to find (not required)
+     * @return all News DTOs
      */
     @Operation(summary = "Find all News", tags = "NewsController")
     @ApiResponses(value = {
@@ -97,10 +107,11 @@ public class NewsController {
     }
 
     /**
-     * GET /api/v0/news : Find News info by criteria
+     * GET /api/v0/news : Find all News entities info by criteria
      *
-     * @param searchCriteria News searchCriteria to return (not required)
-     * @param pageable page number & page size values to return (not required)
+     * @param searchCriteria News search criteria to find (not required)
+     * @param pageable page number & page size values to find (not required)
+     * @return all News DTOs by criteria
      */
     @Operation(summary = "Find all News by Criteria", tags = "NewsController")
     @ApiResponses(value = {
@@ -125,11 +136,12 @@ public class NewsController {
     }
 
     /**
-     * GET /api/v0/news/{id} : Find News info
+     * GET /api/v0/news/{id} : Find News entity info
      *
-     * @param id News ID to return (required)
-     * @param pageable page number & page size values to return (not required)
-     * @throws EntityNotFoundException if the News with ID don't exist
+     * @param id News ID to find (required)
+     * @param pageable page number & page size values to find (not required)
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
+     * @return found News DTO by ID
      */
     @Operation(summary = "Find News by ID", tags = "NewsController")
     @ApiResponses(value = {
@@ -152,22 +164,27 @@ public class NewsController {
     }
 
     /**
-     * PUT /api/v0/news/{id} : Update an existing News info
+     * PUT /api/v0/news/{id} : Update an existing News entity info by ID
      *
-     * @param id News ID to return (required)
-     * @param newsDtoRequest News object to update (required)
-     * @throws EntityNotFoundException if the News with ID don't exist
+     * @param token user JWT to verify user authorization
+     * @param id News ID to update (required)
+     * @param newsDtoRequest News DTO to update (required)
+     * @throws NoPermissionsException if there are no permissions to update the News entity
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
+     * @return updated News DTO by ID
      */
     @Operation(summary = "Update News by ID", tags = "NewsController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated News by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<NewsDtoResponse>> update(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody @Valid NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.update(id, newsDtoRequest);
+        NewsDtoResponse news = newsService.update(id, newsDtoRequest, token);
 
         return APIResponse.of(
                 "Changes were applied to the News with ID " + id,
@@ -178,22 +195,26 @@ public class NewsController {
     }
 
     /**
-     * PATCH /api/v0/news/{id} : Partial Update an existing News info
+     * PATCH /api/v0/news/{id} : Partial Update an existing News entity info by ID
      *
-     * @param id News ID to return (required)
-     * @param newsDtoRequest News object to update (required)
-     * @throws EntityNotFoundException if News with ID don't exist
+     * @param token user JWT to verify user authorization
+     * @param id News ID to partial update (required)
+     * @param newsDtoRequest News DTO to partial update (required)
+     * @throws NoPermissionsException if there are no permissions to partial update the News entity
+     * @throws EntityNotFoundException if News entity with ID doesn't exist
      */
     @Operation(summary = "Partial Update News by ID", tags = "NewsController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Partial Updated News by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<NewsDtoResponse>> updatePartially(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
             @PathVariable @NotNull @PositiveOrZero Long id,
             @RequestBody NewsDtoRequest newsDtoRequest) {
-        NewsDtoResponse news = newsService.update(id, newsDtoRequest);
+        NewsDtoResponse news = newsService.update(id, newsDtoRequest, token);
 
         return APIResponse.of(
                 "Partial changes were applied to the News with ID " + id,
@@ -204,19 +225,24 @@ public class NewsController {
     }
 
     /**
-     * DELETE /api/v0/news/{id} : Delete a News
+     * DELETE /api/v0/news/{id} : Delete a News entity by ID
      *
-     * @param id News ID to return (required)
-     * @throws EntityNotFoundException if the News with ID don't exist
+     * @param token user JWT to verify user authorization
+     * @param id News ID to delete (required)
+     * @throws NoPermissionsException if there are no permissions to delete the News entity
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
      */
     @Operation(summary = "Delete News by ID", tags = "NewsController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted News by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
-        newsService.deleteById(id);
+    public ResponseEntity<APIResponse<Void>> deleteById(
+            @RequestHeader(AUTHORIZATION_HEADER) String token,
+            @PathVariable @NotNull @PositiveOrZero Long id) {
+        newsService.deleteById(id, token);
 
         return APIResponse.of(
                 "News with ID " + id + " were deleted",

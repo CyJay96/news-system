@@ -10,6 +10,11 @@ import ru.clevertec.ecl.newsservice.model.dto.request.CommentDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.CommentDtoResponse;
 import ru.clevertec.ecl.newsservice.model.entity.Comment;
 
+/**
+ * Mapper for Comment entities & DTOs
+ *
+ * @author Konstantin Voytko
+ */
 @Mapper
 public interface CommentMapper {
 

@@ -8,6 +8,11 @@ import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 
+/**
+ * Comment DTO for requests
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "Comment DTO Request")

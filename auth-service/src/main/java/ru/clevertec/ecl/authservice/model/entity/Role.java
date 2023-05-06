@@ -18,6 +18,11 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Role entity to store in the database
+ *
+ * @author Konstantin Voytko
+ */
 @Entity
 @Table(name = "roles")
 @Builder
@@ -41,5 +46,4 @@ public class Role implements BaseEntity<Long> {
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
-
 }

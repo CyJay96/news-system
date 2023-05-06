@@ -6,6 +6,11 @@ import ru.clevertec.ecl.authservice.model.entity.Role;
 
 import java.util.List;
 
+/**
+ * Mapper for Role entities & DTOs
+ *
+ * @author Konstantin Voytko
+ */
 @Mapper
 public interface RoleMapper {
 

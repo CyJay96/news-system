@@ -10,6 +10,11 @@ import ru.clevertec.ecl.newsservice.model.dto.request.NewsDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.NewsDtoResponse;
 import ru.clevertec.ecl.newsservice.model.entity.News;
 
+/**
+ * Mapper for News entities & DTOs
+ *
+ * @author Konstantin Voytko
+ */
 @Mapper
 public interface NewsMapper {
 

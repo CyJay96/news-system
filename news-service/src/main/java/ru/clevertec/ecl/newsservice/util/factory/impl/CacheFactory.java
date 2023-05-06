@@ -8,6 +8,11 @@ import ru.clevertec.ecl.newsservice.util.factory.Factory;
 import static ru.clevertec.ecl.newsservice.util.Constants.LFU_CACHE;
 import static ru.clevertec.ecl.newsservice.util.Constants.LRU_CACHE;
 
+/**
+ * Cache factory for specifying a specific implementation
+ *
+ * @author Konstantin Voytko
+ */
 public class CacheFactory<K, V> implements Factory<K, V> {
 
     @Override

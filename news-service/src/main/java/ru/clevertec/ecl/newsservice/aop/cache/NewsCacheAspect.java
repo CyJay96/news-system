@@ -13,6 +13,11 @@ import ru.clevertec.ecl.newsservice.util.factory.impl.CacheFactory;
 
 import java.util.Optional;
 
+/**
+ * Aspect for caching Comment entity in AOP style
+ *
+ * @author Konstantin Voytko
+ */
 @Aspect
 @Component
 @Profile("dev")
@@ -28,6 +33,11 @@ public class NewsCacheAspect {
         cache = factory.getCache(cacheType, cacheCapacity);
     }
 
+    /**
+     * Caches the News entity when saving to the database
+     *
+     * @param joinPoint A point of observation, joining the code, where the introduction of functionality is required
+     */
     @Around("execution(* ru.clevertec.ecl.newsservice.repository.NewsRepository.save(..))")
     public News aroundSaveMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         News news = (News) joinPoint.proceed();
@@ -35,6 +45,12 @@ public class NewsCacheAspect {
         return news;
     }
 
+    /**
+     * When calling the JPA findById method, first looks the News entity in the cache and returns,
+     * otherwise it takes it out of the database, stores it in the cache and returns
+     *
+     * @param joinPoint A point of observation, joining the code, where the introduction of functionality is required
+     */
     @Around("execution(* ru.clevertec.ecl.newsservice.repository.NewsRepository.findById(..))")
     public Optional<News> aroundFindByIdMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Long id = (Long) joinPoint.getArgs()[0];
@@ -46,6 +62,12 @@ public class NewsCacheAspect {
         return newsOptional;
     }
 
+    /**
+     * When calling the JPA deleteById method, first, if the News entity
+     * is available in the cache, deletes in it, and then from the database
+     *
+     * @param joinPoint A point of observation, joining the code, where the introduction of functionality is required
+     */
     @Around("execution(* ru.clevertec.ecl.newsservice.repository.NewsRepository.deleteById(..))")
     public Object aroundDeleteByIdMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Long id = (Long) joinPoint.getArgs()[0];

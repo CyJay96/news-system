@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+/**
+ * Cache configuration depending on the profile
+ *
+ * @author Konstantin Voytko
+ */
 @Configuration
 public class CacheConfig {
 

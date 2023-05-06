@@ -9,6 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
+/**
+ * The JwtUser entity implementation to work with UserDetails
+ *
+ * @author Konstantin Voytko
+ */
 @Builder
 @AllArgsConstructor
 public class JwtUser implements UserDetails {

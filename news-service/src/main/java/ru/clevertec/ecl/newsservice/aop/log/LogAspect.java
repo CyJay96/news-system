@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+/**
+ * Aspect for logging the execution of the method in the request-response style
+ *
+ * @author Konstantin Voytko
+ */
 @Aspect
 @Slf4j
 @Component
@@ -22,6 +27,11 @@ public class LogAspect {
     private void annotatedClass() {
     }
 
+    /**
+     * Logs the execution of the method in the request-response style
+     *
+     * @param joinPoint A point of observation, joining the code, where the introduction of functionality is required
+     */
     @Around("annotatedMethods() || annotatedClass()")
     public Object writeLog(ProceedingJoinPoint joinPoint) throws Throwable {
         Object methodResult = joinPoint.proceed(joinPoint.getArgs());

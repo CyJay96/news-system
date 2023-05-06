@@ -21,6 +21,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The News entity to store in the database
+ *
+ * @author Konstantin Voytko
+ */
 @Entity
 @Table(name = "news")
 @Builder

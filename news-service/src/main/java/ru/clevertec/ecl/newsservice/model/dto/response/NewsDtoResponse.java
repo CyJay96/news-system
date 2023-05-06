@@ -7,6 +7,11 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+/**
+ * News DTO for responses
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "News DTO Response")

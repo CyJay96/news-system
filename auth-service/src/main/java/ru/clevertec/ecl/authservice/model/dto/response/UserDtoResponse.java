@@ -1,6 +1,7 @@
 package ru.clevertec.ecl.authservice.model.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import ru.clevertec.ecl.authservice.model.enums.Status;
@@ -9,8 +10,14 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+/**
+ * User DTO for responses
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
+@Schema(description = "User DTO Response")
 public class UserDtoResponse implements Serializable {
 
     @JsonProperty(value = "id")
@@ -19,10 +26,10 @@ public class UserDtoResponse implements Serializable {
     @JsonProperty(value = "username")
     private String username;
 
-    @JsonProperty(value = "first_name")
+    @JsonProperty(value = "firstName")
     private String firstName;
 
-    @JsonProperty(value = "last_name")
+    @JsonProperty(value = "lastName")
     private String lastName;
 
     @JsonProperty(value = "email")

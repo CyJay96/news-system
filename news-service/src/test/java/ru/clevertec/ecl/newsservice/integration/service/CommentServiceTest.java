@@ -25,6 +25,7 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_BEARER;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE;
 import static ru.clevertec.ecl.newsservice.util.TestConstants.TEST_PAGE_SIZE;
 
@@ -46,7 +47,7 @@ class CommentServiceTest extends BaseIntegrationTest {
     @DisplayName("Save Comment")
     void checkSaveShouldReturnCommentDtoResponse() {
         Long expectedNewsId = newsRepository.findFirstByOrderByIdAsc().get().getId();
-        CommentDtoResponse actualComment = commentService.save(expectedNewsId, commentDtoRequest);
+        CommentDtoResponse actualComment = commentService.save(expectedNewsId, commentDtoRequest, TEST_BEARER);
         assertThat(actualComment.getNewsId()).isEqualTo(expectedNewsId);
     }
 
@@ -91,7 +92,7 @@ class CommentServiceTest extends BaseIntegrationTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkUpdateShouldReturnCommentDtoResponse(Long id) {
-            CommentDtoResponse actualComment = commentService.update(id, commentDtoRequest);
+            CommentDtoResponse actualComment = commentService.update(id, commentDtoRequest, TEST_BEARER);
             assertThat(actualComment.getId()).isEqualTo(id);
         }
 
@@ -100,7 +101,9 @@ class CommentServiceTest extends BaseIntegrationTest {
         void checkUpdateShouldThrowCommentNotFoundException() {
             Long doesntExistCommentId = new Random()
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
-            assertThrows(EntityNotFoundException.class, () -> commentService.update(doesntExistCommentId, commentDtoRequest));
+            assertThrows(EntityNotFoundException.class,
+                    () -> commentService.update(doesntExistCommentId, commentDtoRequest, TEST_BEARER)
+            );
         }
     }
 
@@ -110,7 +113,7 @@ class CommentServiceTest extends BaseIntegrationTest {
         @ParameterizedTest
         @ValueSource(longs = {1L, 2L, 3L})
         void checkDeleteByIdShouldReturnVoid(Long id) {
-            commentService.deleteById(id);
+            commentService.deleteById(id, TEST_BEARER);
             entityManager.flush();
         }
 
@@ -120,7 +123,7 @@ class CommentServiceTest extends BaseIntegrationTest {
             Long doesntExistCommentId = new Random()
                     .nextLong(commentRepository.findFirstByOrderByIdDesc().get().getId() + 1, Long.MAX_VALUE);
             assertThrows(EntityNotFoundException.class, () -> {
-                commentService.deleteById(doesntExistCommentId);
+                commentService.deleteById(doesntExistCommentId, TEST_BEARER);
                 entityManager.flush();
             });
         }

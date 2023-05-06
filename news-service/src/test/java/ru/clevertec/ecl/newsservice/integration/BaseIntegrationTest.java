@@ -1,12 +1,18 @@
 package ru.clevertec.ecl.newsservice.integration;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
+import ru.clevertec.ecl.newsservice.integration.util.WireMockRequestUtil;
+import ru.clevertec.ecl.newsservice.integration.util.WireMockUtil;
+
+import java.io.IOException;
 
 @SpringBootTest
 @Transactional
@@ -24,6 +30,22 @@ public abstract class BaseIntegrationTest {
     @BeforeAll
     static void init() {
         container.start();
+        WireMockUtil.startServer();
+    }
+
+    @BeforeEach
+    void setUp() {
+        WireMockUtil.resetStubs();
+        try {
+            WireMockRequestUtil.initRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterAll
+    static void tearDown() {
+        WireMockUtil.stopServer();
     }
 
     @DynamicPropertySource

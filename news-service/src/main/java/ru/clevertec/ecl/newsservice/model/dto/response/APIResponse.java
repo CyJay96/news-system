@@ -5,11 +5,17 @@ import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+/**
+ * API response DTO
+ *
+ * @author Konstantin Voytko
+ */
 @Value
 @Builder
-public class APIResponse<T> {
+public class APIResponse<T> implements Serializable {
 
     OffsetDateTime timestamp = OffsetDateTime.now();
 
