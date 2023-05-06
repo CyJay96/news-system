@@ -54,7 +54,7 @@ public class LfuCache<K, V> implements Cache<K, V> {
 
     /**
      * Associates the specified value with the specified key in this cache. If the cache previously contained a
-     * mapping for the key, the old value is replaced and it's frequency is incremented. If adding the new mapping
+     * mapping for the key, the old value is replaced, and it's frequency is incremented. If adding the new mapping
      * would cause the cache to exceed its capacity, the least frequently used mapping is evicted.
      *
      * @param key the key with which the specified value is to be associated

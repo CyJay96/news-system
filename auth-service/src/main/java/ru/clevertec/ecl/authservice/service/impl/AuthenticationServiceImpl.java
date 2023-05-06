@@ -27,6 +27,11 @@ import java.util.List;
 import static ru.clevertec.ecl.authservice.model.enums.Role.ROLE_SUBSCRIBER;
 import static ru.clevertec.ecl.authservice.model.enums.Status.ACTIVE;
 
+/**
+ * Authentication Service to work authentication
+ *
+ * @author Konstantin Voytko
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -38,6 +43,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * Register a new User
+     *
+     * @param registerRequestDto Register Request DTO to save a new User
+     * @throws UserExistenceException if User with such name or email already exists
+     * @return authentication DTO with JWT
+     */
     @Override
     public AuthDtoResponse register(final RegisterRequestDto registerRequestDto) {
         try {
@@ -64,6 +76,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    /**
+     * Authorize a User
+     *
+     * @param loginRequestDto Login Request DTO to authorize
+     * @throws BadCredentialsException if the User entered invalid username or password
+     * @return authentication DTO with JWT
+     */
     @Override
     public AuthDtoResponse login(final LoginRequestDto loginRequestDto) {
         try {

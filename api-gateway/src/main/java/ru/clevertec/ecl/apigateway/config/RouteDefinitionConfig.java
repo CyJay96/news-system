@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Route Definition API Gateway configuration
+ *
+ * @author Konstantin Voytko
+ */
 @Configuration
 public class RouteDefinitionConfig {
 

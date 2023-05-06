@@ -17,6 +17,11 @@ import java.util.List;
 import static ru.clevertec.ecl.authservice.util.Constants.EMAIL_REGEX;
 import static ru.clevertec.ecl.authservice.util.Constants.PHONE_REGEX;
 
+/**
+ * User DTO for requests
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "User DTO Request")

@@ -5,9 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * News search criteria DTO
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
-@Schema(description = "News Criteria DTO")
+@Schema(description = "News search criteria DTO")
 public class NewsCriteria {
 
     @JsonProperty("title")

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.newsservice.aop.annotation.Log;
 import ru.clevertec.ecl.newsservice.exception.EntityNotFoundException;
+import ru.clevertec.ecl.newsservice.exception.NoPermissionsException;
 import ru.clevertec.ecl.newsservice.model.criteria.CommentCriteria;
 import ru.clevertec.ecl.newsservice.model.dto.request.CommentDtoRequest;
 import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
@@ -56,14 +57,18 @@ public class CommentController {
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
-     * POST /api/v0/comments : Create a new Comment
+     * POST /api/v0/comments : Save a new Comment entity
      *
-     * @param newsId News ID to return (required)
-     * @param commentDtoRequest Comment object to create (required)
+     * @param token user JWT to verify user authorization
+     * @param newsId News ID to save Comment entity (required)
+     * @param commentDtoRequest Comment DTO to save (required)
+     * @throws NoPermissionsException if there are no permissions to save the Comment entity
+     * @return saved Comment DTO
      */
     @Operation(summary = "Save Comment", tags = "CommentController")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Saved Comment")
+            @ApiResponse(responseCode = "201", description = "Saved Comment"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PostMapping("/{newsId}")
     public ResponseEntity<APIResponse<CommentDtoResponse>> saveByNewsId(
@@ -81,9 +86,10 @@ public class CommentController {
     }
 
     /**
-     * GET /api/v0/comments : Find Comments info
+     * GET /api/v0/comments : Find all Comment entities info
      *
-     * @param pageable page number & page size values to return (not required)
+     * @param pageable page number & page size values to find (not required)
+     * @return all Comment DTOs
      */
     @Operation(summary = "Find all Comments", tags = "CommentController")
     @ApiResponses(value = {
@@ -103,10 +109,11 @@ public class CommentController {
     }
 
     /**
-     * GET /api/v0/comments : Find Comments info by criteria
+     * GET /api/v0/comments : Find all Comments entities info by criteria
      *
-     * @param searchCriteria Comments searchCriteria to return (not required)
-     * @param pageable page number & page size values to return (not required)
+     * @param searchCriteria Comments search criteria to find (not required)
+     * @param pageable page number & page size values to find (not required)
+     * @return all Comment DTOs by criteria
      */
     @Operation(summary = "Find all Comments by Criteria", tags = "CommentController")
     @ApiResponses(value = {
@@ -131,10 +138,11 @@ public class CommentController {
     }
 
     /**
-     * GET /api/v0/comments/{id} : Find Comment info
+     * GET /api/v0/comments/{id} : Find Comment entity info by ID
      *
-     * @param id Comment ID to return (required)
-     * @throws EntityNotFoundException if the Comment with ID doesn't exist
+     * @param id Comment ID to find (required)
+     * @throws EntityNotFoundException if the Comment entity with ID doesn't exist
+     * @return found Comment DTO by ID
      */
     @Operation(summary = "Find Comment by ID", tags = "CommentController")
     @ApiResponses(value = {
@@ -154,15 +162,19 @@ public class CommentController {
     }
 
     /**
-     * PUT /api/v0/comments/{id} : Update an existing Comment info
+     * PUT /api/v0/comments/{id} : Update an existing Comment entity info by ID
      *
-     * @param id Comment ID to return (required)
-     * @param commentDtoRequest Comment object to update (required)
-     * @throws EntityNotFoundException if the Comment with ID doesn't exist
+     * @param token user JWT to verify user authorization
+     * @param id Comment ID to update (required)
+     * @param commentDtoRequest Comment DTO to update (required)
+     * @throws NoPermissionsException if there are no permissions to update the Comment entity
+     * @throws EntityNotFoundException if the Comment entity with ID doesn't exist
+     * @return updated Comment DTO by ID
      */
     @Operation(summary = "Update Comment by ID", tags = "CommentController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated Comment by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PutMapping("/{id}")
@@ -181,15 +193,19 @@ public class CommentController {
     }
 
     /**
-     * PATCH /api/v0/comments/{id} : Partial Update an existing Comment info
+     * PATCH /api/v0/comments/{id} : Partial Update an existing Comment entity info by ID
      *
-     * @param id Comment ID to return (required)
-     * @param commentDtoRequest Comment object to update (required)
-     * @throws EntityNotFoundException if Comment with ID doesn't exist
+     * @param token user JWT to verify user authorization
+     * @param id Comment ID to partial update (required)
+     * @param commentDtoRequest Comment DTO to partial update (required)
+     * @throws NoPermissionsException if there are no permissions to partial update the Comment entity
+     * @throws EntityNotFoundException if Comment entity with ID doesn't exist
+     * @return partial updated Comment DTO by ID
      */
     @Operation(summary = "Partial Update Comment by ID", tags = "CommentController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Partial Updated Comment by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @PatchMapping("/{id}")
@@ -208,14 +224,17 @@ public class CommentController {
     }
 
     /**
-     * DELETE /api/v0/comments/{id} : Delete a Comment
+     * DELETE /api/v0/comments/{id} : Delete a Comment entity by ID
      *
-     * @param id Comment ID to return (required)
-     * @throws EntityNotFoundException if the Comment with ID doesn't exist
+     * @param token user JWT to verify user authorization
+     * @param id Comment ID to delete (required)
+     * @throws NoPermissionsException if there are no permissions to delete the Comment entity
+     * @throws EntityNotFoundException if the Comment entity with ID doesn't exist
      */
     @Operation(summary = "Delete Comment by ID", tags = "CommentController")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted Comment by ID"),
+            @ApiResponse(responseCode = "403", description = "There are no permissions", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))}),
             @ApiResponse(responseCode = "404", description = "Entity not found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = APIResponse.class))})
     })
     @DeleteMapping("/{id}")

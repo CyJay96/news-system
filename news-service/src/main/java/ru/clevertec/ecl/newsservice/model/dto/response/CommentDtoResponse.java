@@ -7,6 +7,11 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+/**
+ * Comment DTO for responses
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "Comment DTO Response")

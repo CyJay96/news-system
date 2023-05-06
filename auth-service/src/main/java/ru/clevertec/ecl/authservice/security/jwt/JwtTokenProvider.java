@@ -13,7 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.authservice.exception.TokenExpirationException;
 import ru.clevertec.ecl.authservice.model.entity.Role;
 import ru.clevertec.ecl.authservice.model.entity.User;
@@ -22,7 +22,12 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
-@Component
+/**
+ * Service for working with a JWT token
+ *
+ * @author Konstantin Voytko
+ */
+@Service
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
@@ -43,6 +48,12 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
+    /**
+     * Create a new JWT by User entity
+     *
+     * @param user User entity to create a new JWT
+     * @return User JWT
+     */
     public String createToken(final User user) {
         final Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put(USER_ROLES_FIELD, user.getRoles().stream()
@@ -60,12 +71,24 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Put UserDetails in Authentication by JWT
+     *
+     * @param token User JWT to put UserDetails in Authentication
+     * @return Authentication object
+     */
     public Authentication getAuthentication(final String token) {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 
     }
 
+    /**
+     * Get username from User JWT
+     *
+     * @param token User JWT to parse username
+     * @return username
+     */
     public String getUsername(final String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
@@ -74,6 +97,12 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    /**
+     * Add "Bearer " to JWT
+     *
+     * @param request current request
+     * @return final JWT
+     */
     public String resolveToken(HttpServletRequest request) {
         final String bearerToken = request.getHeader(AUTHORIZATION);
         if (Objects.nonNull(bearerToken) && bearerToken.startsWith(BEARER)) {
@@ -82,6 +111,12 @@ public class JwtTokenProvider {
         return null;
     }
 
+    /**
+     * Validate JWT by secret key & expiration date
+     *
+     * @param token current JWT
+     * @return boolean value, whether the JWT is valid
+     */
     public boolean validateToken(final String token) {
         try {
             Jws<Claims> claims = Jwts.parser()

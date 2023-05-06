@@ -10,14 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.clevertec.ecl.authservice.security.jwt.JwtConfigurer;
-import ru.clevertec.ecl.authservice.security.jwt.JwtTokenProvider;
 
+/**
+ * Security configuration
+ *
+ * @author Konstantin Voytko
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtConfigurer jwtConfigurer;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -38,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider))
+                .apply(jwtConfigurer)
                 .and()
                 .build();
     }

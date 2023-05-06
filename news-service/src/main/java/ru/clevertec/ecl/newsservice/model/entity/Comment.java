@@ -19,6 +19,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 
+/**
+ * The Comment entity to store in the database
+ *
+ * @author Konstantin Voytko
+ */
 @Entity
 @Table(name = "comments")
 @Builder

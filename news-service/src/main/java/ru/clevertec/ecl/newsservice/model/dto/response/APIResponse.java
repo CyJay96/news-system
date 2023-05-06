@@ -8,6 +8,11 @@ import org.springframework.http.ResponseEntity;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+/**
+ * API response DTO
+ *
+ * @author Konstantin Voytko
+ */
 @Value
 @Builder
 public class APIResponse<T> implements Serializable {

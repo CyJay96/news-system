@@ -6,6 +6,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * Authentication DTO for responses
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "Authentication DTO Response")

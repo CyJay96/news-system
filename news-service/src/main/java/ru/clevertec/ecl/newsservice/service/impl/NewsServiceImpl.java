@@ -35,6 +35,14 @@ public class NewsServiceImpl implements NewsService {
     private final CommentMapper commentMapper;
     private final UserHelper userHelper;
 
+    /**
+     * Save a new News entity. Uses the Redis-cache implementation
+     *
+     * @param token user JWT to verify user authorization
+     * @param newsDtoRequest News DTO to save
+     * @throws NoPermissionsException if there are no permissions to save the News entity
+     * @return saved News DTO
+     */
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse save(NewsDtoRequest newsDtoRequest, String token) {
@@ -46,6 +54,12 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.toNewsDtoResponse(newsRepository.save(news));
     }
 
+    /**
+     * Find all News entities info. Uses the Redis-cache implementation
+     *
+     * @param pageable page number & page size values to find
+     * @return all News DTOs
+     */
     @Override
     @Cacheable(value = "news")
     public PageResponse<NewsDtoResponse> findAll(Pageable pageable) {
@@ -63,6 +77,13 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
 
+    /**
+     * Find all News entities info by criteria. Uses the Redis-cache implementation
+     *
+     * @param searchCriteria News search criteria to find
+     * @param pageable page number & page size values to find
+     * @return all News DTOs by criteria
+     */
     @Override
     public PageResponse<NewsDtoResponse> findAllByCriteria(NewsCriteria searchCriteria, Pageable pageable) {
         searchCriteria.setPage(pageable.getPageNumber());
@@ -82,6 +103,13 @@ public class NewsServiceImpl implements NewsService {
                 .build();
     }
 
+    /**
+     * Find News entity info by ID. Uses the Redis-cache implementation
+     *
+     * @param id News ID to find
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
+     * @return found News DTO by ID
+     */
     @Override
     @Cacheable(value = "news")
     public NewsDtoResponse findById(Long id, Pageable pageable) {
@@ -104,6 +132,16 @@ public class NewsServiceImpl implements NewsService {
         return newsDtoResponse;
     }
 
+    /**
+     * Update an existing News entity info by ID. Uses the Redis-cache implementation
+     *
+     * @param token user JWT to verify user authorization
+     * @param id News ID to update
+     * @param newsDtoRequest News DTO to update
+     * @throws NoPermissionsException if there are no permissions to update the News entity
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
+     * @return updated News DTO by ID
+     */
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public NewsDtoResponse update(Long id, NewsDtoRequest newsDtoRequest, String token) {
@@ -117,6 +155,14 @@ public class NewsServiceImpl implements NewsService {
         return newsMapper.toNewsDtoResponse(newsRepository.save(news));
     }
 
+    /**
+     * Delete a News entity by ID. Uses the Redis-cache implementation
+     *
+     * @param token user JWT to verify user authorization
+     * @param id News ID to delete
+     * @throws NoPermissionsException if there are no permissions to delete the News entity
+     * @throws EntityNotFoundException if the News entity with ID doesn't exist
+     */
     @Override
     @CacheEvict(value = "news", allEntries = true)
     public void deleteById(Long id, String token) {

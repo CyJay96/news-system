@@ -18,6 +18,11 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Role entity to store in the database
+ *
+ * @author Konstantin Voytko
+ */
 @Entity
 @Table(name = "roles")
 @Builder

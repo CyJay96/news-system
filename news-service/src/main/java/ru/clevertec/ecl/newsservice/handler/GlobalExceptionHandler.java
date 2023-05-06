@@ -14,6 +14,11 @@ import ru.clevertec.ecl.newsservice.model.dto.response.APIResponse;
 
 import java.util.Optional;
 
+/**
+ * Global Exception Handler on news-service module
+ *
+ * @author Konstantin Voytko
+ */
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {

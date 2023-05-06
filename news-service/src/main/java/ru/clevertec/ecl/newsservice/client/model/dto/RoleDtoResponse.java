@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * DTO response for User role
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @NoArgsConstructor

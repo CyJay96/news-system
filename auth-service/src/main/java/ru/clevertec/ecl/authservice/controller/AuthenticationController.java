@@ -10,11 +10,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.ecl.authservice.exception.UserExistenceException;
 import ru.clevertec.ecl.authservice.model.dto.request.LoginRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.request.RegisterRequestDto;
 import ru.clevertec.ecl.authservice.model.dto.response.APIResponse;
@@ -40,9 +42,11 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     /**
-     * POST /api/v0/auth : Create a new User
+     * POST /api/v0/auth : Register a new User
      *
-     * @param registerRequestDto Register Request object to create (required)
+     * @param registerRequestDto Register Request DTO to save a new User (required)
+     * @throws UserExistenceException if User with such name or email already exists
+     * @return authentication DTO with JWT
      */
     @Operation(summary = "Register User", tags = "AuthenticationController")
     @ApiResponses(value = {
@@ -63,7 +67,9 @@ public class AuthenticationController {
     /**
      * POST /api/v0/auth : Authorize a User
      *
-     * @param loginRequestDto Login Request object to authorize (required)
+     * @param loginRequestDto Login Request DTO to authorize (required)
+     * @throws BadCredentialsException if the User entered invalid username or password
+     * @return authentication DTO with JWT
      */
     @Operation(summary = "Authorize User", tags = "AuthenticationController")
     @ApiResponses(value = {

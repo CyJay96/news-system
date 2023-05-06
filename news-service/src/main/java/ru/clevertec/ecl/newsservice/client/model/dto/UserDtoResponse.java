@@ -11,6 +11,11 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+/**
+ * DTO response for User
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @NoArgsConstructor

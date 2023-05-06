@@ -1,5 +1,10 @@
 package ru.clevertec.ecl.authservice.exception;
 
+/**
+ * Exception if the User with such name or email already exists
+ *
+ * @author Konstantin Voytko
+ */
 public class UserExistenceException extends RuntimeException {
 
     private static final String DEFAULT_MESSAGE = "User with such name %s or email %s already exists";

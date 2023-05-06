@@ -17,6 +17,11 @@ import ru.clevertec.ecl.authservice.model.dto.response.APIResponse;
 
 import java.util.Optional;
 
+/**
+ * Global Exception Handler on auth-service module
+ *
+ * @author Konstantin Voytko
+ */
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {

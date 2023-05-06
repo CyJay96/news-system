@@ -53,9 +53,10 @@ public class UserController {
     private final UserTokenService userTokenService;
 
     /**
-     * GET /api/v0/users : Find Users info
+     * GET /api/v0/users : Find all User entities info
      *
-     * @param pageable page number & page size values to return (not required)
+     * @param pageable page number & page size values to find (not required)
+     * @return all User DTOs
      */
     @Operation(summary = "Find all Users", tags = "UserController")
     @ApiResponses(value = {
@@ -75,10 +76,11 @@ public class UserController {
     }
 
     /**
-     * GET /api/v0/users/{id} : Find User info
+     * GET /api/v0/users/{id} : Find User entity info by ID
      *
-     * @param id User ID to return (required)
-     * @throws EntityNotFoundException if the User with ID doesn't exist
+     * @param id User ID to find (required)
+     * @throws EntityNotFoundException if the User entity with ID doesn't exist
+     * @return found User DTO by ID
      */
     @Operation(summary = "Find User by ID", tags = "UserController")
     @ApiResponses(value = {
@@ -98,10 +100,11 @@ public class UserController {
     }
 
     /**
-     * GET /api/v0/users/byUsername/{username} : Find User info
+     * GET /api/v0/users/byUsername/{username} : Find User entity info by username
      *
-     * @param username User username to return (required)
-     * @throws EntityNotFoundException if the User with username doesn't exist
+     * @param username User username to find (required)
+     * @throws EntityNotFoundException if the User entity with username doesn't exist
+     * @return found User DTO by username
      */
     @Operation(summary = "Find User by Username", tags = "UserController")
     @ApiResponses(value = {
@@ -121,12 +124,13 @@ public class UserController {
     }
 
     /**
-     * GET /api/v0/users/byToken/{token} : Find User info
+     * GET /api/v0/users/byToken/{token} : Find User entity info by JWT
      *
-     * @param token JWT token to return (required)
+     * @param token JWT to find (required)
      * @throws TokenExpirationException if the User token was expired
      * @throws TokenValidationException if the User token is not valid
-     * @throws EntityNotFoundException if the User with username doesn't exist
+     * @throws EntityNotFoundException if the User entity with username doesn't exist
+     * @return found User DTO by JWT
      */
     @Operation(summary = "Find User by token", tags = "UserController")
     @ApiResponses(value = {
@@ -148,11 +152,12 @@ public class UserController {
     }
 
     /**
-     * PUT /api/v0/users/{id} : Update an existing User info
+     * PUT /api/v0/users/{id} : Update an existing User entity info by ID
      *
-     * @param id User ID to return (required)
-     * @param userDtoRequest User object to update (required)
-     * @throws EntityNotFoundException if the User with ID doesn't exist
+     * @param id User ID to update (required)
+     * @param userDtoRequest User DTO to update (required)
+     * @throws EntityNotFoundException if the User entity with ID doesn't exist
+     * @return updated User DTO by ID
      */
     @Operation(summary = "Update User by ID", tags = "UserController")
     @ApiResponses(value = {
@@ -175,11 +180,12 @@ public class UserController {
     }
 
     /**
-     * PATCH /api/v0/users/{id} : Partial Update an existing User info
+     * PATCH /api/v0/users/{id} : Partial Update an existing User entity info by ID
      *
-     * @param id User ID to return (required)
-     * @param userDtoRequest User object to update (required)
-     * @throws EntityNotFoundException if User with ID doesn't exist
+     * @param id User ID to partial update (required)
+     * @param userDtoRequest User DTO to partial update (required)
+     * @throws EntityNotFoundException if User entity with ID doesn't exist
+     * @return partial updated User DTO by ID
      */
     @Operation(summary = "Partial Update User by ID", tags = "UserController")
     @ApiResponses(value = {
@@ -202,10 +208,11 @@ public class UserController {
     }
 
     /**
-     * PATCH /api/v0/users/{id} : Block a User
+     * PATCH /api/v0/users/{id} : Block a User entity by ID
      *
-     * @param id User ID to return (required)
-     * @throws EntityNotFoundException if the User with ID doesn't exist
+     * @param id User ID to block (required)
+     * @throws EntityNotFoundException if the User entity with ID doesn't exist
+     * @return blocked User DTO by ID
      */
     @Operation(summary = "Block User by ID", tags = "UserController")
     @ApiResponses(value = {
@@ -225,10 +232,11 @@ public class UserController {
     }
 
     /**
-     * PATCH /api/v0/users/{id} : Unblock a User
+     * PATCH /api/v0/users/{id} : Unblock a User entity by ID
      *
-     * @param id User ID to return (required)
-     * @throws EntityNotFoundException if the User with ID doesn't exist
+     * @param id User ID to unblock (required)
+     * @throws EntityNotFoundException if the User entity with ID doesn't exist
+     * @return unblocked User DTO by ID
      */
     @Operation(summary = "Unblock User by ID", tags = "UserController")
     @ApiResponses(value = {
@@ -248,10 +256,11 @@ public class UserController {
     }
 
     /**
-     * DELETE /api/v0/users/{id} : Delete a User
+     * DELETE /api/v0/users/{id} : Delete a User entity by ID
      *
-     * @param id User ID to return (required)
-     * @throws EntityNotFoundException if the User with ID doesn't exist
+     * @param id User ID to delete (required)
+     * @throws EntityNotFoundException if the User entity with ID doesn't exist
+     * @return deleted User DTO by ID
      */
     @Operation(summary = "Delete User by ID", tags = "UserController")
     @ApiResponses(value = {

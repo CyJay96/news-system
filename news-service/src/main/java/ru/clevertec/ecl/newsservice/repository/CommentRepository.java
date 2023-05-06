@@ -8,6 +8,11 @@ import ru.clevertec.ecl.newsservice.model.entity.Comment;
 
 import java.util.Optional;
 
+/**
+ * Comment Repository to work with the database
+ *
+ * @author Konstantin Voytko
+ */
 public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
 
     Page<Comment> findAllByNewsId(Long newsId, Pageable pageable);

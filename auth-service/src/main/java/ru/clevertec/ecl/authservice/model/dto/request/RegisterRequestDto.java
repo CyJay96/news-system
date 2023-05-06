@@ -11,6 +11,11 @@ import java.io.Serializable;
 
 import static ru.clevertec.ecl.authservice.util.Constants.EMAIL_REGEX;
 
+/**
+ * Register DTO for requests
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "Register DTO Request")

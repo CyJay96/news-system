@@ -1,5 +1,10 @@
 package ru.clevertec.ecl.newsservice.exception;
 
+/**
+ * Exception if the entity was not found
+ *
+ * @author Konstantin Voytko
+ */
 public class EntityNotFoundException extends RuntimeException {
 
     private static final String DEFAULT_MESSAGE = "%s was not found";

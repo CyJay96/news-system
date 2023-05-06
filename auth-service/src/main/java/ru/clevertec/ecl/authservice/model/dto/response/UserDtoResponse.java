@@ -10,6 +10,11 @@ import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+/**
+ * User DTO for responses
+ *
+ * @author Konstantin Voytko
+ */
 @Data
 @Builder
 @Schema(description = "User DTO Response")
