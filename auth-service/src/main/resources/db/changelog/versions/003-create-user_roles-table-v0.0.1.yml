@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 003v0.0.1
+      author: github.com/CyJay96
+      comment: Create USER_ROLES table
+      changes:
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false

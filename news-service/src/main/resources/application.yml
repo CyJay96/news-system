@@ -1,0 +1,26 @@
+spring:
+  config:
+    import:
+      - "optional:configserver:http://config-service:8088"
+      - "classpath:application-dev.yml"
+    activate:
+      on-profile: docker
+
+app:
+  user-feign-client:
+    host: auth-service
+
+
+---
+
+spring:
+  application:
+    name: news-service
+  config:
+    import:
+      - "optional:configserver:http://localhost:8088"
+      - "classpath:application-dev.yml"
+
+app:
+  user-feign-client:
+    host: auth-service

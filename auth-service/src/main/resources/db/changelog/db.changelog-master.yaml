@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include: # Create USERS table
+      file: db/changelog/versions/001-create-users-table-v0.0.1.yml
+  - include: # Create ROLES table
+      file: db/changelog/versions/002-create-roles-table-v0.0.1.yml
+  - include: # Create USER_ROLES table
+      file: db/changelog/versions/003-create-user_roles-table-v0.0.1.yml
+  - include: # Create FOREIGN KEYS
+      file: db/changelog/versions/004-create-foreign-keys-v0.0.1.yml
+  - include: # Insert TEST data
+      file: db/changelog/versions/005-insert-test-data-v0.0.1.yml

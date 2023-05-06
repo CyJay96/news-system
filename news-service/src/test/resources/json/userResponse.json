@@ -1,0 +1,25 @@
+{
+  "id": 1,
+  "username": "Mike",
+  "firstName": null,
+  "lastName": null,
+  "email": "mike@example.com",
+  "phone": null,
+  "createDate": "2023-05-02T10:41:30.200507+03:00",
+  "lastUpdateDate": "2023-05-02T10:41:30.200507+03:00",
+  "roles": [
+    {
+      "id": 1,
+      "name": "ROLE_SUBSCRIBER"
+    },
+    {
+      "id": 2,
+      "name": "ROLE_JOURNALIST"
+    },
+    {
+      "id": 3,
+      "name": "ROLE_ADMIN"
+    }
+  ],
+  "status": "ACTIVE"
+}

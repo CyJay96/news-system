@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005v0.0.1
+      author: github.com/CyJay96
+      context: test
+      changes:
+        - sql:
+            INSERT INTO roles(name) VALUES
+              ('ROLE_SUBSCRIBER'),
+              ('ROLE_JOURNALIST'),
+              ('ROLE_ADMIN');
+
+            INSERT INTO users(username, email, password) VALUES
+              ('Konstantin', 'konstantin@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS'),
+              ('Alexander', 'sanya@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS'),
+              ('Daniil', 'daniil@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS'),
+              ('Yuri', 'yuri@example.com', '$2a$10$ceUd7J//WqfLdJzmiqqRA.vX6jEdQLl8ynOFBcbNYrD2csp7VUKRS');
+
+            INSERT INTO user_roles(user_id, role_id) VALUES
+              (1, 1),
+              (1, 2),
+              (1, 3),
+              (2, 1),
+              (2, 2),
+              (3, 1),
+              (4, 1);

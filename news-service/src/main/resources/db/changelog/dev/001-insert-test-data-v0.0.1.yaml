@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 001v0.0.1
+      author: github.com/CyJay96
+      context: test
+      changes:
+        - sql:
+            INSERT INTO news(time, title, text) VALUES
+              ('2023-03-16 16:25:21.867392', 'Apple', 'Apple releases Swift 5.5'),
+              ('2023-03-25 08:41:21.867392', 'Rust', 'Rust 2021 edition now available'),
+              ('2023-03-19 21:36:21.867392', 'Python', 'Python 3.10 introduces new features'),
+              ('2023-03-07 17:17:21.867392', 'Google', 'Google announces TensorFlow 3.0'),
+              ('2023-04-08 14:04:28.547638', 'Microsoft', 'Microsoft releases Visual Studio 2022'),
+              ('2023-04-09 10:55:28.547638', 'Kotlin', 'Kotlin 1.6 brings new language features'),
+              ('2023-03-29 11:54:12.249537', 'GitHub Copilot', 'GitHub introduces Copilot AI tool'),
+              ('2023-04-02 15:14:28.198542', 'Java', 'Java 18 brings enhanced security features'),
+              ('2023-04-08 09:37:43.782436', 'Facebook', 'Facebook open-sources PyTorch Tools'),
+              ('2023-04-05 19:25:41.954237', 'Docker', 'Docker Desktop now free for all'),
+              ('2023-04-27 14:43:28.172483', 'Apache Kafka', 'Apache Kafka 3.0 released'),
+              ('2023-04-08 15:26:09.674258', 'TypeScript', 'TypeScript 4.5 introduces new features'),
+              ('2023-03-29 12:47:34.540638', 'Flutter', 'Flutter 3.0 introduces web support'),
+              ('2023-03-29 13:04:16.843571', 'PHP', 'PHP 8.1 adds new features'),
+              ('2023-04-25 10:52:18.429106', 'Amazon', 'Amazon launches AWS Lambda Container Image Support'),
+              ('2023-04-08 15:26:09.674258', 'Go', 'Go 1.18 introduces new language features'),
+              ('2023-04-18 20:58:37.674258', 'Google Cloud', 'Google Cloud Run now supports Knative'),
+              ('2023-02-12 03:28:53.571089', 'GitHub', 'GitHub launches Codespaces'),
+              ('2023-03-26 09:39:41.571089', 'IntelliJ IDEA', 'IntelliJ IDEA 2022.1 now available'),
+              ('2023-04-24 19:22:02.571089', 'Vue.js', 'Vue.js 4.0 brings new improvements');
+
+            SELECT SETVAL('news_id_seq', (SELECT MAX(id) FROM news));
+
+            INSERT INTO comments(time, text, username, news_id) VALUES
+              ('2023-03-25 08:41:21.867392', 'Exciting news for Swift developers!', 'John', 1),
+              ('2023-03-19 21:36:21.867392', 'I am looking forward to using Rust 2021 edition', 'Sarah', 2),
+              ('2023-03-07 17:17:21.867392', 'The new features in Python 3.10 sound interesting', 'David', 3),
+              ('2023-04-08 14:04:28.547638', 'Excited for TensorFlow 3.0!', 'Anna', 4),
+              ('2023-04-09 10:55:28.547638', 'Visual Studio 2022 looks promising', 'Mike', 5),
+              ('2023-03-29 11:54:12.249537', 'Kotlin is becoming more and more popular', 'Olivia', 6),
+              ('2023-04-02 15:14:28.198542', 'Excited to try out GitHub Copilot', 'Emily', 7),
+              ('2023-04-08 09:37:43.782436', 'Java 18 security features are much needed', 'Daniel', 8),
+              ('2023-04-05 19:25:41.954237', 'Great news for PyTorch users!', 'Jessica', 9),
+              ('2023-04-27 14:43:28.172483', 'Free Docker Desktop? Yes, please!', 'Mark', 10),
+              ('2023-04-08 15:26:09.674258', 'Looking forward to using Apache Kafka 3.0', 'Rachel', 11),
+              ('2023-03-29 12:47:34.540638', 'Cannot wait to try out TypeScript 4.5', 'Robert', 12),
+              ('2023-03-29 13:04:16.843571', 'Flutter 3.0 with web support? Amazing!', 'Sophie', 13),
+              ('2023-04-25 10:52:18.429106', 'Excited for PHP 8.1', 'Andrew', 14),
+              ('2023-04-08 15:26:09.674258', 'AWS Lambda Container Image Support is a game changer', 'Grace', 15),
+              ('2023-04-18 20:58:37.674258', 'The new features in Go 1.18 sound great', 'Thomas', 16),
+              ('2023-02-12 03:28:53.571089', 'Knative supporton Google Cloud Run is fantastic news', 'Nina', 17),
+              ('2023-03-26 09:39:41.571089', 'GitHub Codespaces will be a game changer', 'Lucas', 18),
+              ('2023-04-24 19:22:02.571089', 'IntelliJ IDEA 2022.1 is finally here!', 'Sophia', 19),
+              ('2023-03-16 16:25:21.867392', 'Vue.js 4.0 brings many improvements', 'Jacob', 20);
+
+            SELECT SETVAL('comments_id_seq', (SELECT MAX(id) FROM comments));

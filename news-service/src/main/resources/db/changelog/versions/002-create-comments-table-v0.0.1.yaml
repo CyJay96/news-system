@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 002v0.0.1
+      author: github.com/CyJay96
+      comment: Create COMMENTS table
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: time
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: text
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: news_id
+                  type: bigint
+                  constraints:
+                    nullable: false

@@ -1,0 +1,970 @@
+{
+	"info": {
+		"_postman_id": "62f98b0c-f865-4b37-8d37-be87594b2d73",
+		"name": "NewsSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22750065"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user\",\r\n    \"email\": \"user@example.com\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/api/v0/auth/register",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Konstantin\",\r\n    \"password\": \"admin\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/api/v0/auth/login",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzMjA2LCJleHAiOjE2NzMxMzY4MDZ9.UtxmY29_tzyt4LBgFHlsFKmX9XpSTCWJnHCXgQ-iyWw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users?page=0&size=10",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTg0ODQyLCJleHAiOjE2NzMxODg0NDJ9.6ze0khixhn6zPLBH9o7xC_SDgzDY4A62p7HVkgw9eYc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by username",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTg0ODQyLCJleHAiOjE2NzMxODg0NDJ9.6ze0khixhn6zPLBH9o7xC_SDgzDY4A62p7HVkgw9eYc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/byUsername/Konstantin",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"byUsername",
+								"Konstantin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTg0ODQyLCJleHAiOjE2NzMxODg0NDJ9.6ze0khixhn6zPLBH9o7xC_SDgzDY4A62p7HVkgw9eYc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/byToken/test_token",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"byToken",
+								"test_token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzNjA3LCJleHAiOjE2NzMxMzcyMDd9.tUJqaN2Zf_9d3KqoEzYARlBbpX578yJbsTRckdOgBEU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Konstantin\",\r\n    \"firstName\": \"Konstantin\",\r\n    \"lastName\": \"Voytko\",\r\n    \"email\": \"konstantin@example.com\",\r\n    \"phone\": \"+375(29)733-42-07\",\r\n    \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/api/v0/users/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYW55YSIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjczMTMzNjA3LCJleHAiOjE2NzMxMzcyMDd9.tUJqaN2Zf_9d3KqoEzYARlBbpX578yJbsTRckdOgBEU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Konstantin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/api/v0/users/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTY3MTc1MjQ2MCwiZXhwIjoxNjcxNzU2MDYwfQ.oSNqvmmCdJFjRlAk4tkd6qniXxm4ayko1NECNg4vL_M",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/block/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"block",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unblock by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNjcxNjI4NzE1LCJleHAiOjE2NzE2MzIzMTV9.pkiOMdPQ3MbsfB6a2ZUbpzl2HBfI1o24KAmYd4xyGMU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/unblock/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"unblock",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ6enoiLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNjcxNjI5NDg4LCJleHAiOjE2NzE2MzMwODh9.o5rJ1HfEZtjwGez1w0D8CChvpNQOj5bkE3CFgXHUrDg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/api/v0/users/1",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "News",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"new title\",\r\n    \"text\": \"new text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/news",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/news?page=0&size=4",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all by Criteria",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"apple\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/news/criteria?page=0&size=4",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news",
+								"criteria"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/news/1?page=0&size=4",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"put title\",\r\n    \"text\": \"put text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/news/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"patch title\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/news/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/news/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Save",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"new text\",\r\n    \"username\": \"new username\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/comments/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/comments?page=0&size=4",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all by Criteria",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"github\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/comments/criteria?page=0&size=4",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"criteria"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/comments/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"put text\",\r\n    \"username\": \"put username\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/comments/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"patch text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{news}}/api/v0/comments/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{news}}/api/v0/comments/1",
+							"host": [
+								"{{news}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostUrl",
+			"value": "localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "news",
+			"value": "localhost:8765/news",
+			"type": "string"
+		},
+		{
+			"key": "auth",
+			"value": "localhost:8765/auth",
+			"type": "string"
+		},
+		{
+			"key": "jwtToken",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwicm9sZXMiOlsiUk9MRV9TVUJTQ1JJQkVSIl0sImlhdCI6MTY4MzIzODMwMCwiZXhwIjoxNjgzMjQxOTAwfQ.4C3C-VlB0u5x0gEoNuZ_-vdebY8A-puXbSs0NqBk_Eg",
+			"type": "string"
+		}
+	]
+}

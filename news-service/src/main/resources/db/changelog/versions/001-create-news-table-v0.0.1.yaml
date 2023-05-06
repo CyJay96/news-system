@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 001v0.0.1
+      author: github.com/CyJay96
+      comment: Create NEWS table
+      changes:
+        - createTable:
+            tableName: news
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: time
+                  type: timestamp(6)
+                  defaultValue: "NOW()"
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: text
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

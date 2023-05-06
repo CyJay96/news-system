@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    show-sql: true
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-dev.yaml
+
+app:
+  user-feign-client:
+    port: 8585
+    host: http://localhost:${app.user-feign-client.port:8585}

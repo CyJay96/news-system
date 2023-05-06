@@ -1,0 +1,109 @@
+version: '3.9'
+
+services:
+  config-service:
+    build:
+      dockerfile: config-service/Dockerfile
+      context: ./
+    image: cyjay96/config-service
+    ports:
+      - "8088:8088"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  eureka-server:
+    build:
+      dockerfile: eureka-server/Dockerfile
+      context: ./
+    image: cyjay96/eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - config-service
+    entrypoint: ["/app/wait-for-it.sh", "config-service:8088", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      dockerfile: api-gateway/Dockerfile
+      context: ./
+    image: cyjay96/api-gateway
+    ports:
+      - "8765:8765"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - eureka-server
+    entrypoint: ["/app/wait-for-it.sh", "eureka-server:8761", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  news-service:
+    build:
+      dockerfile: news-service/Dockerfile
+      context: ./
+    image: cyjay96/news-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: news_system_dev
+    depends_on:
+      - eureka-server
+    entrypoint: ["/app/wait-for-it.sh", "eureka-server:8761", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      dockerfile: auth-service/Dockerfile
+      context: ./
+    image: cyjay96/auth-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: news_system_auth
+    depends_on:
+      - eureka-server
+    entrypoint: ["/app/wait-for-it.sh", "eureka-server:8761", "-t", "60", "--", "java", "-jar", "/app/app.jar"]
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./init_db:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    networks:
+      - postgres-network
+    restart: unless-stopped
+
+networks:
+  postgres-network:
